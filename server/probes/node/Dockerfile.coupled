@@ -1,0 +1,13 @@
+FROM node:20-alpine AS build
+WORKDIR /build
+COPY probe-coupled.ts .
+RUN npm install -g typescript && tsc --target ES2022 --module commonjs --esModuleInterop --outDir /build/dist probe-coupled.ts
+
+FROM gcr.io/distroless/nodejs20-debian12
+WORKDIR /app
+COPY --from=build /build/dist/probe-coupled.js .
+ENV HOLOCRON_TOKEN=""
+ENV HOLOCRON_API=""
+ENV HOLOCRON_HMAC_SECRET=""
+ENV HEARTBEAT_INTERVAL="60"
+CMD ["probe-coupled.js"]

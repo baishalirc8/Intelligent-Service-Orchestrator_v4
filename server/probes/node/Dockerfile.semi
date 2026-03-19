@@ -1,0 +1,19 @@
+FROM node:20-alpine AS build
+WORKDIR /build
+COPY probe-semi.ts .
+RUN npm install -g typescript && tsc --target ES2022 --module commonjs --esModuleInterop --outDir /build/dist probe-semi.ts
+
+FROM gcr.io/distroless/nodejs20-debian12
+WORKDIR /app
+COPY --from=build /build/dist/probe-semi.js .
+VOLUME /var/lib/holocron/buffer
+ENV HOLOCRON_TOKEN=""
+ENV HOLOCRON_API=""
+ENV HOLOCRON_HMAC_SECRET=""
+ENV HOLOCRON_BUFFER_DIR="/var/lib/holocron/buffer"
+ENV HOLOCRON_BUFFER_MAX="10000"
+ENV HOLOCRON_SYNC="opportunistic"
+ENV OPENAI_API_KEY=""
+ENV OPENAI_MODEL="gpt-4o"
+ENV HEARTBEAT_INTERVAL="120"
+CMD ["probe-semi.js"]

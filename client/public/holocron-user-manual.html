@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOLOCRON AI - User Manual</title>
+  <style>
+    :root {
+      --bg: #0a0a14;
+      --bg-card: #12121f;
+      --bg-card-hover: #1a1a2e;
+      --border: #1e1e3a;
+      --text: #e2e2f0;
+      --text-muted: #8888aa;
+      --accent: #6366f1;
+      --accent-dim: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --sidebar-w: 280px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 24px 0;
+      z-index: 100;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .sidebar-header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .sidebar-header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .nav-section {
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      padding: 8px 8px 4px;
+    }
+    .nav-link {
+      display: block;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      background: var(--accent-glow);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-link.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 40px 60px 80px;
+      max-width: 960px;
+    }
+    .content h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .content .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+    .content h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .content h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 28px 0 10px;
+      color: var(--accent);
+    }
+    .content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--text);
+    }
+    .content p {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .content ul, .content ol {
+      margin: 8px 0 16px 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .content li { margin-bottom: 6px; }
+    .content li strong { color: var(--text); }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .card-grid .card { margin: 0; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+    .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .tip {
+      background: rgba(99, 102, 241, 0.08);
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .tip strong { color: var(--accent); }
+
+    .warning {
+      background: rgba(245, 158, 11, 0.08);
+      border-left: 3px solid var(--amber);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .warning strong { color: var(--amber); }
+
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      margin-left: 0;
+      padding-left: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      padding: 10px 0 10px 48px;
+      position: relative;
+      border-left: 2px solid var(--border);
+      margin-left: 16px;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: -14px;
+      top: 8px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .steps li:last-child { border-left-color: transparent; }
+
+    .shortcut {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: monospace;
+      color: var(--text);
+    }
+
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin: 8px 0 16px;
+    }
+    .flow-step {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .flow-arrow { color: var(--text-muted); font-size: 12px; }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(34,197,94,0.1);
+      color: var(--green);
+      border: 1px solid rgba(34,197,94,0.2);
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .content { margin-left: 0; padding: 24px 20px 60px; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>HOLOCRON AI</h1>
+      <p>User Manual</p>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Getting Started</div>
+      <a class="nav-link" href="#welcome">Welcome</a>
+      <a class="nav-link" href="#first-login">First Login & Onboarding</a>
+      <a class="nav-link" href="#navigation">Navigating the Platform</a>
+      <a class="nav-link" href="#shortcuts">Keyboard Shortcuts</a>
+      <a class="nav-link" href="#dark-mode">Dark Mode & Themes</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Your Organization</div>
+      <a class="nav-link" href="#setup-crews">Setting Up Your Crews</a>
+      <a class="nav-link" href="#managing-agents">Managing Agents</a>
+      <a class="nav-link" href="#enable-ai">Enabling AI Agents</a>
+      <a class="nav-link" href="#recommendations">AI Recommendations</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Infrastructure</div>
+      <a class="nav-link" href="#cockpit-guide">Using the Cockpit</a>
+      <a class="nav-link" href="#deploy-probes">Deploying Probes</a>
+      <a class="nav-link" href="#manage-assets">Managing Assets</a>
+      <a class="nav-link" href="#monitor-events">Monitoring Events & Alerts</a>
+      <a class="nav-link" href="#app-monitoring">Application Monitoring</a>
+      <a class="nav-link" href="#service-metrics-guide">Service Metrics</a>
+      <a class="nav-link" href="#performance-guide">Performance Dashboard</a>
+      <a class="nav-link" href="#calendar-guide">Activity Calendar</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">AI Operations</div>
+      <a class="nav-link" href="#chat-guide">Using Agent Chat</a>
+      <a class="nav-link" href="#matrix-guide">Agent Matrix</a>
+      <a class="nav-link" href="#console-guide">Ops Console</a>
+      <a class="nav-link" href="#ai-providers-guide">Configuring AI Providers</a>
+      <a class="nav-link" href="#cost-guide">Managing AI Costs</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">ITSM Suite</div>
+      <a class="nav-link" href="#incidents-guide">Handling Incidents</a>
+      <a class="nav-link" href="#problems-guide">Problem Management</a>
+      <a class="nav-link" href="#changes-guide">Change Management</a>
+      <a class="nav-link" href="#sr-guide">Service Requests</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Orchestration</div>
+      <a class="nav-link" href="#oncall-guide">On-Call Roster</a>
+      <a class="nav-link" href="#tasks-guide">Running AI Tasks</a>
+      <a class="nav-link" href="#workflows-guide">Workflow Pipelines</a>
+      <a class="nav-link" href="#kb-guide">Knowledge Base</a>
+      <a class="nav-link" href="#bcp-guide">BCP & DRP Planning</a>
+      <a class="nav-link" href="#lifecycle-guide">BCP Lifecycle</a>
+      <a class="nav-link" href="#leaderboard-guide">Leaderboard & Gamification</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Help</div>
+      <a class="nav-link" href="#troubleshooting">Troubleshooting</a>
+      <a class="nav-link" href="#faq">FAQ</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="version-badge">User Manual &mdash; v2.0</div>
+    <h1>HOLOCRON AI User Manual</h1>
+    <p class="subtitle">Your step-by-step guide to mastering the Automation Orchestration Platform</p>
+
+    <!-- ======== WELCOME ======== -->
+    <section id="welcome">
+      <h2>Welcome to HOLOCRON AI</h2>
+      <p>HOLOCRON AI is your intelligent partner for managing IT operations. Think of it as a digital command center where you can:</p>
+      <ul>
+        <li><strong>Organize your IT team</strong> into departments ("Crews") with clearly defined roles ("Agents")</li>
+        <li><strong>Assign AI assistants</strong> to work alongside your human team members, handling routine tasks automatically</li>
+        <li><strong>Monitor your infrastructure</strong> in real-time with proactive alerting and AI-driven remediation</li>
+        <li><strong>Manage IT operations</strong> with ITIL-aligned incident, problem, change, and service request workflows</li>
+        <li><strong>Orchestrate work</strong> through approval-gated pipelines, task management, and knowledge sharing</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> If this is your first time, the platform will walk you through a guided tour after you log in. You can restart the tour at any time from your profile menu.
+      </div>
+    </section>
+
+    <!-- ======== FIRST LOGIN ======== -->
+    <section id="first-login">
+      <h2>First Login & Onboarding</h2>
+      <p>When you first access HOLOCRON AI, you'll go through a quick setup process:</p>
+
+      <ol class="steps">
+        <li><strong>Create your account</strong> &mdash; Enter your username, password, and display name on the registration page. If you already have an account, simply log in.</li>
+        <li><strong>Enter company information</strong> &mdash; Tell us your company name, industry, and size. This helps us recommend the best AI agents for your organization.</li>
+        <li><strong>Choose your departments</strong> &mdash; Select which Crews (departments) are relevant to your organization. You can always add more later.</li>
+        <li><strong>Review AI recommendations</strong> &mdash; HOLOCRON AI suggests optimal agent assignments based on your company profile. You can accept, modify, or skip these recommendations.</li>
+        <li><strong>Start using the platform</strong> &mdash; You're taken to the Crews & Agents page where you can see your organizational chart and begin customizing.</li>
+      </ol>
+
+      <div class="tip">
+        <strong>Tip:</strong> Look for the Setup Progress indicator in the top-right corner of the header. It shows you what steps are left to fully configure your platform.
+      </div>
+    </section>
+
+    <!-- ======== NAVIGATION ======== -->
+    <section id="navigation">
+      <h2>Navigating the Platform</h2>
+      <p>The platform has four main areas, accessible from the left sidebar:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>Organization</h4>
+          <p>Manage your team structure, view active agents, and review AI recommendations.</p>
+          <ul>
+            <li><strong>Crews & Agents</strong> &mdash; Your org chart</li>
+            <li><strong>Active Agents</strong> &mdash; Currently assigned AI agents</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Infrastructure</h4>
+          <p>Monitor and manage your IT infrastructure.</p>
+          <ul>
+            <li><strong>Cockpit</strong> &mdash; Real-time command center</li>
+            <li><strong>Configuration</strong> &mdash; Probe setup, metrics, app monitor</li>
+            <li><strong>Discovery</strong> &mdash; Find devices on your network</li>
+            <li><strong>Asset Management</strong> &mdash; Your device inventory</li>
+            <li><strong>Events</strong> &mdash; Alerts and notifications</li>
+            <li><strong>Performance</strong> &mdash; Utilization trends</li>
+            <li><strong>Activity Calendar</strong> &mdash; Scheduled activities</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>AI Operations</h4>
+          <p>Interact with and monitor your AI agents.</p>
+          <ul>
+            <li><strong>Agent Matrix</strong> &mdash; Agent overview</li>
+            <li><strong>Ops Console</strong> &mdash; Real-time agent activity</li>
+            <li><strong>Agent Chat</strong> &mdash; Talk to your AI agents</li>
+            <li><strong>Recommendations</strong> &mdash; AI-suggested improvements</li>
+            <li><strong>Leaderboard</strong> &mdash; Agent performance rankings</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Orchestration</h4>
+          <p>Manage IT service workflows and operations.</p>
+          <ul>
+            <li><strong>Incidents / Problems / Changes / Service Requests</strong></li>
+            <li><strong>On-Call Roster</strong> &mdash; Team availability</li>
+            <li><strong>Tasks</strong> &mdash; AI task execution</li>
+            <li><strong>Workflows</strong> &mdash; Approval pipelines</li>
+            <li><strong>Knowledge Base</strong> &mdash; Articles & guides</li>
+            <li><strong>BCP / DRP</strong> &mdash; Business continuity</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Top Header Bar</h3>
+      <p>The top bar provides quick access to:</p>
+      <ul>
+        <li><strong>Sidebar toggle</strong> &mdash; Collapse or expand the navigation (top-left)</li>
+        <li><strong>Search bar</strong> &mdash; Search across the entire platform (center)</li>
+        <li><strong>Setup Progress</strong> &mdash; Shows your configuration completion status</li>
+        <li><strong>Patent Exploration</strong> &mdash; Explore the HOLOCRON AI patent portfolio</li>
+        <li><strong>Technical Documentation</strong> &mdash; Full technical reference</li>
+        <li><strong>Theme toggle</strong> &mdash; Switch between light and dark mode</li>
+        <li><strong>User menu</strong> &mdash; Your profile and sign out (top-right avatar)</li>
+      </ul>
+    </section>
+
+    <!-- ======== SHORTCUTS ======== -->
+    <section id="shortcuts">
+      <h2>Keyboard Shortcuts</h2>
+      <p>Speed up your workflow with these keyboard shortcuts:</p>
+
+      <table>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+        <tr><td><span class="shortcut">Ctrl + K</span> or <span class="shortcut">Cmd + K</span></td><td>Open the Command Palette &mdash; search and navigate to any page quickly</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip:</strong> The Command Palette is the fastest way to navigate. Type a page name like "incidents" or "cockpit" and press Enter to jump directly there.
+      </div>
+    </section>
+
+    <!-- ======== DARK MODE ======== -->
+    <section id="dark-mode">
+      <h2>Dark Mode & Themes</h2>
+      <p>HOLOCRON AI supports both light and dark themes. Click the sun/moon icon in the top-right header to toggle between them. Your preference is saved automatically and persists across sessions.</p>
+    </section>
+
+    <!-- ======== SETUP CREWS ======== -->
+    <section id="setup-crews">
+      <h2>Setting Up Your Crews</h2>
+      <p>Crews are your departments. The platform comes pre-loaded with industry-standard IT departments, each containing a full hierarchy of roles.</p>
+
+      <h3>How to View Your Crews</h3>
+      <ol>
+        <li>Navigate to <strong>Organization &rarr; Crews & Agents</strong> from the sidebar</li>
+        <li>You'll see a visual organizational chart grouped by department</li>
+        <li>Each card represents an Agent (role) with its title, department, and AI capability status</li>
+      </ol>
+
+      <h3>Available Departments</h3>
+      <p>The platform includes departments such as: Security Operations, Network Operations, Cloud Operations, DevOps, Data Management, Infrastructure, Applications, IT Service Management, Compliance & Risk, End User Computing, and the Executive office.</p>
+    </section>
+
+    <!-- ======== MANAGING AGENTS ======== -->
+    <section id="managing-agents">
+      <h2>Managing Agents</h2>
+      <p>Agents are the individual roles within your Crews. Each agent has defined responsibilities and AI capabilities.</p>
+
+      <h3>Subscribing to an Agent</h3>
+      <ol class="steps">
+        <li>Go to <strong>Crews & Agents</strong> and find the role you want to activate</li>
+        <li>Click on the role card to view its details &mdash; responsibilities, AI capabilities, and cost</li>
+        <li>Click <strong>Subscribe</strong> to add the agent to your active roster</li>
+        <li>The agent will appear in your <strong>Active Agents</strong> list</li>
+      </ol>
+
+      <h3>Active Agents Page</h3>
+      <p>Navigate to <strong>Organization &rarr; Active Agents</strong> to see all your subscribed agents. From here you can:</p>
+      <ul>
+        <li>View each agent's current status and assignments</li>
+        <li>Enable or disable the AI shadow for any agent</li>
+        <li>Remove agents you no longer need</li>
+      </ul>
+    </section>
+
+    <!-- ======== ENABLE AI ======== -->
+    <section id="enable-ai">
+      <h2>Enabling AI Agents</h2>
+      <p>Each role subscription has an <strong>AI Shadow</strong> toggle. When you enable it, the platform assigns an AI agent to that role. The AI agent will:</p>
+
+      <ul>
+        <li>Monitor infrastructure assets assigned to its role</li>
+        <li>Generate alerts when it detects anomalies or threshold breaches</li>
+        <li>Propose remediation actions for critical issues</li>
+        <li>Build best-practice metric profiles based on the role's responsibilities</li>
+        <li>Provide insights through the Agent Chat interface</li>
+      </ul>
+
+      <div class="warning">
+        <strong>Important:</strong> AI agents augment your human team &mdash; they don't replace them. All critical remediation actions require human approval before execution. You stay in control.
+      </div>
+    </section>
+
+    <!-- ======== RECOMMENDATIONS ======== -->
+    <section id="recommendations">
+      <h2>AI Recommendations</h2>
+      <p>Navigate to <strong>AI Operations &rarr; Recommendations</strong> to see AI-generated suggestions for improving your organization's IT operations. Recommendations may include suggested role additions, configuration improvements, or operational optimizations based on your current setup.</p>
+    </section>
+
+    <!-- ======== COCKPIT ======== -->
+    <section id="cockpit-guide">
+      <h2>Using the Cockpit</h2>
+      <p>The Cockpit is your mission control center. Navigate to <strong>Infrastructure &rarr; Cockpit</strong> to see:</p>
+
+      <ul>
+        <li><strong>Asset status overview</strong> &mdash; How many devices are online, offline, or degraded</li>
+        <li><strong>Active alerts</strong> &mdash; Current issues sorted by severity</li>
+        <li><strong>AI agent coverage</strong> &mdash; How much of your infrastructure is being monitored by AI</li>
+        <li><strong>Service health</strong> &mdash; Status of your monitored applications</li>
+        <li><strong>Probe health</strong> &mdash; Whether your discovery probes are reporting in</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> The Cockpit is the best starting point each day. It gives you an instant overview of your infrastructure health and any issues that need attention.
+      </div>
+    </section>
+
+    <!-- ======== DEPLOY PROBES ======== -->
+    <section id="deploy-probes">
+      <h2>Deploying Probes</h2>
+      <p>Probes are lightweight agents you install on your network to discover and monitor devices. To set up a probe:</p>
+
+      <ol class="steps">
+        <li>Go to <strong>Infrastructure &rarr; Configuration &rarr; Configure</strong></li>
+        <li>Click <strong>Add Probe</strong> and choose a probe type:
+          <ul style="margin-top:4px">
+            <li><span class="badge badge-blue">Coupled</span> &mdash; Always connected, real-time data</li>
+            <li><span class="badge badge-amber">Semi-Autonomous</span> &mdash; Works offline, syncs when connected</li>
+            <li><span class="badge badge-purple">Fully Autonomous</span> &mdash; Self-contained, can self-remediate</li>
+          </ul>
+        </li>
+        <li>Configure the probe name, network range, and credentials</li>
+        <li>Download the probe agent script and install it on your target server</li>
+        <li>The probe will start heartbeating back to the platform and discovering devices</li>
+      </ol>
+
+      <h3>Adding Credentials</h3>
+      <p>Probes need credentials to access devices via SNMP, SSH, or WMI. Go to the <strong>Credentials</strong> section in Configure to add them. You can link multiple credentials to a single probe for environments with different authentication requirements.</p>
+
+      <h3>Probe Clustering</h3>
+      <p>For large environments, you can scale a probe by adding cluster nodes. Open a probe's detail panel and go to the <strong>Cluster</strong> tab to add nodes with different hardware tiers (Entry, Standard, Performance, Enterprise).</p>
+    </section>
+
+    <!-- ======== MANAGE ASSETS ======== -->
+    <section id="manage-assets">
+      <h2>Managing Assets</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Asset Management</strong> to see all discovered devices.</p>
+
+      <h3>Asset Details</h3>
+      <p>Click on any asset to see its full profile including:</p>
+      <ul>
+        <li>Hardware specifications (CPU, RAM, storage, serial number)</li>
+        <li>Software inventory (OS, versions, patches)</li>
+        <li>Network configuration (interfaces, VLANs, IP addresses)</li>
+        <li>Security posture (compliance status, pen test results)</li>
+        <li>Vulnerabilities (CVEs, patch status)</li>
+        <li>Assigned AI agent</li>
+      </ul>
+
+      <h3>AI Deep Scan</h3>
+      <p>For any asset, you can trigger an <strong>AI Deep Scan</strong> which uses artificial intelligence to perform a detailed analysis of the device, identifying potential issues and optimization opportunities.</p>
+    </section>
+
+    <!-- ======== MONITOR EVENTS ======== -->
+    <section id="monitor-events">
+      <h2>Monitoring Events & Alerts</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Event Management</strong> to see all alerts and events across your infrastructure.</p>
+
+      <h3>Alert Severity Levels</h3>
+      <table>
+        <tr><th>Level</th><th>What It Means</th><th>Action Required</th></tr>
+        <tr><td><span class="badge badge-red">Critical</span></td><td>Service-impacting issue requiring immediate attention</td><td>Immediate response</td></tr>
+        <tr><td><span class="badge badge-amber">High / Warning</span></td><td>Significant issue that could escalate</td><td>Investigate soon</td></tr>
+        <tr><td><span class="badge badge-blue">Medium</span></td><td>Notable issue to monitor</td><td>Plan to address</td></tr>
+        <tr><td><span class="badge badge-green">Low</span></td><td>Informational or minor issue</td><td>Address when convenient</td></tr>
+      </table>
+
+      <h3>AI Auto-Remediation</h3>
+      <p>When a critical alert is detected, the AI may generate a remediation script. You'll see a remediation proposal in the alert details. Review the proposed fix, and if you agree, approve it for execution. The platform will never execute remediation without your approval.</p>
+
+      <div class="warning">
+        <strong>Important:</strong> Always review remediation scripts before approving. While the AI is highly accurate, human oversight is essential for production changes.
+      </div>
+    </section>
+
+    <!-- ======== APP MONITORING ======== -->
+    <section id="app-monitoring">
+      <h2>Application Monitoring</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Configuration &rarr; Application Monitor</strong> to track the health of your applications.</p>
+
+      <h3>How It Works</h3>
+      <ol>
+        <li>AI automatically discovers applications running on your monitored assets</li>
+        <li>Each application receives a health score based on CPU, memory, response time, and uptime</li>
+        <li>Application topologies show how services depend on each other</li>
+        <li>You can group applications by criticality: Critical, High, Medium, Low</li>
+      </ol>
+    </section>
+
+    <!-- ======== SERVICE METRICS ======== -->
+    <section id="service-metrics-guide">
+      <h2>Service Metrics</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Configuration &rarr; Service Metrics</strong> to manage your metric catalog.</p>
+
+      <h3>Views Available</h3>
+      <ul>
+        <li><strong>Service Metrics</strong> &mdash; Browse the full catalog of available metrics</li>
+        <li><strong>Device View</strong> &mdash; See which metrics are assigned to each device</li>
+        <li><strong>Mission Critical</strong> &mdash; View metrics grouped by business criticality</li>
+        <li><strong>Agent Profiles</strong> &mdash; AI-generated metric profiles per agent role</li>
+        <li><strong>AI Cost Estimator</strong> &mdash; Calculate estimated AI usage costs</li>
+        <li><strong>Cache Intelligence</strong> &mdash; Monitor AI template caching efficiency</li>
+        <li><strong>AI Providers</strong> &mdash; Configure which AI model your agents use</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> Use the AI Metrics Intelligence feature to automatically assign the right metrics to your assets. Click the AI wand icon next to any asset to get intelligent metric suggestions.
+      </div>
+    </section>
+
+    <!-- ======== PERFORMANCE ======== -->
+    <section id="performance-guide">
+      <h2>Performance Dashboard</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Performance</strong> to view real-time and historical performance trends for your infrastructure. Charts show CPU, memory, disk, and network utilization across all monitored assets.</p>
+    </section>
+
+    <!-- ======== CALENDAR ======== -->
+    <section id="calendar-guide">
+      <h2>Activity Calendar</h2>
+      <p>Navigate to <strong>Infrastructure &rarr; Activity Calendar</strong> to view scheduled maintenance windows, AI-generated operational insights, and planned activities. Activities generated by AI agents appear here for your review before autonomous execution.</p>
+    </section>
+
+    <!-- ======== AGENT CHAT ======== -->
+    <section id="chat-guide">
+      <h2>Using Agent Chat</h2>
+      <p>Navigate to <strong>AI Operations &rarr; Agent Chat</strong> to have natural language conversations with your AI agents.</p>
+
+      <h3>What You Can Ask</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4>Infrastructure Questions</h4>
+          <p>Ask about your assets, alerts, services, and overall infrastructure health. The AI will route your question to the most relevant specialist agent.</p>
+          <p style="font-size:12px;color:var(--text-muted);font-style:italic">"What's the health status of my firewalls?"<br>"Show me a dashboard of active alerts"<br>"Which servers have critical vulnerabilities?"</p>
+        </div>
+        <div class="card">
+          <h4>General Knowledge</h4>
+          <p>Ask about IT best practices, project management, frameworks, roles, or any strategic question. The AI responds as a Strategic Advisor.</p>
+          <p style="font-size:12px;color:var(--text-muted);font-style:italic">"What roles are needed to manage a project?"<br>"Explain ITIL change management"<br>"What's the difference between RPO and RTO?"</p>
+        </div>
+      </div>
+
+      <h3>Dashboard Widgets</h3>
+      <p>When you ask for a dashboard, overview, or status report, the AI can render interactive visual widgets directly in the chat &mdash; including KPI cards, health lists, alert summaries, data tables, and progress bars. All populated with real data from your infrastructure.</p>
+
+      <h3>Conversations</h3>
+      <p>Your chat history is saved across sessions. You can start new conversations or continue previous ones from the conversation list on the left side of the chat page.</p>
+    </section>
+
+    <!-- ======== AGENT MATRIX ======== -->
+    <section id="matrix-guide">
+      <h2>Agent Matrix</h2>
+      <p>Navigate to <strong>AI Operations &rarr; Agent Matrix</strong> to see a performance overview of all your AI agents. The matrix shows task completion rates, response times, and workload distribution at a glance.</p>
+    </section>
+
+    <!-- ======== OPS CONSOLE ======== -->
+    <section id="console-guide">
+      <h2>Ops Console</h2>
+      <p>Navigate to <strong>AI Operations &rarr; Ops Console</strong> to monitor what your AI agents are doing in real-time. View task execution logs, agent activities, and system operations as they happen.</p>
+    </section>
+
+    <!-- ======== AI PROVIDERS ======== -->
+    <section id="ai-providers-guide">
+      <h2>Configuring AI Providers</h2>
+      <p>HOLOCRON AI supports multiple AI backends. To configure your providers:</p>
+
+      <ol class="steps">
+        <li>Go to <strong>Infrastructure &rarr; Configuration &rarr; Service Metrics &rarr; AI Providers</strong> tab</li>
+        <li>Click <strong>Add Provider</strong> and select the type (OpenAI, Google Gemini, Anthropic Claude, or Custom)</li>
+        <li>Enter your API key and optionally customize the model and base URL</li>
+        <li>Click <strong>Test</strong> to verify the connection works</li>
+        <li>Set a provider as default, or assign specific providers to individual agent roles</li>
+      </ol>
+
+      <div class="tip">
+        <strong>Tip:</strong> You can assign different AI providers to different agent roles. For example, use a cheaper model for routine monitoring tasks and a more capable model for complex analysis.
+      </div>
+    </section>
+
+    <!-- ======== AI COST ======== -->
+    <section id="cost-guide">
+      <h2>Managing AI Costs</h2>
+      <p>HOLOCRON AI includes built-in cost optimization. Navigate to <strong>Service Metrics &rarr; AI Cost Estimator</strong> to see your estimated costs and how caching reduces them.</p>
+
+      <h3>Cost Optimization Features</h3>
+      <ul>
+        <li><strong>Template Cache</strong> &mdash; AI responses are cached by asset type, so similar devices reuse the same analysis. View cache statistics in the <strong>Cache Intelligence</strong> tab.</li>
+        <li><strong>Rate Limiting</strong> &mdash; Built-in cooldowns prevent accidental duplicate API calls when clicking buttons rapidly</li>
+        <li><strong>KB-First Execution</strong> &mdash; AI tasks check the Knowledge Base before calling the AI, using existing articles when a good match is found</li>
+      </ul>
+
+      <p>At Enterprise scale, these optimizations can reduce AI costs by up to 91%.</p>
+    </section>
+
+    <!-- ======== INCIDENTS ======== -->
+    <section id="incidents-guide">
+      <h2>Handling Incidents</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Incidents</strong> to manage service disruptions.</p>
+
+      <h3>Creating an Incident</h3>
+      <ol class="steps">
+        <li>Click <strong>Create Incident</strong></li>
+        <li>Fill in the title, description, severity (Critical/High/Medium/Low), and category</li>
+        <li>The incident is created in <strong>Open</strong> status</li>
+        <li>Assign it to a team member or AI agent for investigation</li>
+      </ol>
+
+      <h3>Incident Lifecycle</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Open</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Investigating</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Resolved</span>
+      </div>
+      <p>Use the action buttons at the bottom of each incident to advance it through the lifecycle. The platform validates that transitions follow the correct order.</p>
+
+      <h3>KPI Dashboard</h3>
+      <p>The top of the Incidents page shows key metrics: total incidents, open count, investigating count, resolved count, critical incidents, and Mean Time to Resolution (MTTR).</p>
+    </section>
+
+    <!-- ======== PROBLEMS ======== -->
+    <section id="problems-guide">
+      <h2>Problem Management</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Problems</strong> to perform root cause analysis on recurring incidents.</p>
+
+      <h3>Problem Lifecycle</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Open</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Investigating</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Root Cause Identified</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Resolved</span>
+      </div>
+
+      <p>When you identify a root cause, you can create a <strong>Known Error</strong> record with a workaround, so your team can handle future occurrences faster.</p>
+    </section>
+
+    <!-- ======== CHANGES ======== -->
+    <section id="changes-guide">
+      <h2>Change Management</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Changes</strong> to manage planned changes to your IT environment.</p>
+
+      <h3>Change Lifecycle</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Draft</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Submitted</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Under Review</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Approved</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Scheduled</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Implemented</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Closed</span>
+      </div>
+
+      <h3>Creating a Change Request</h3>
+      <ol>
+        <li>Click <strong>Create Change</strong></li>
+        <li>Provide a title, description, risk level, impact scope, and rollback plan</li>
+        <li>Submit for review &mdash; it will go through the approval workflow</li>
+        <li>Once approved, schedule the implementation window</li>
+        <li>After implementation, close the change with the results</li>
+      </ol>
+
+      <div class="warning">
+        <strong>Important:</strong> Always include a rollback plan. If something goes wrong during implementation, having a documented rollback procedure is essential.
+      </div>
+    </section>
+
+    <!-- ======== SERVICE REQUESTS ======== -->
+    <section id="sr-guide">
+      <h2>Service Requests</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Service Requests</strong> to manage user requests for IT services.</p>
+
+      <h3>Service Request Lifecycle</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">New</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Assigned</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">On Hold</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Pending Approval</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Fulfilled</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Closed</span>
+      </div>
+
+      <h3>Smart Features</h3>
+      <ul>
+        <li><strong>AI Auto-Assignment</strong> &mdash; New requests are automatically routed to the most relevant AI agent based on the request type</li>
+        <li><strong>Incident Auto-Link</strong> &mdash; If you create an "Incident Report" service request, an incident record is automatically created and linked</li>
+        <li><strong>SLA Tracking</strong> &mdash; Each request shows whether it's on track, at risk, or breached against SLA targets</li>
+      </ul>
+
+      <h3>Request Categories</h3>
+      <p>12 categories available: Access Request, Hardware, Software, Network, Change Request, Incident Report, Information, Training, Account Management, Data Request, Security, and Other.</p>
+    </section>
+
+    <!-- ======== ON-CALL ======== -->
+    <section id="oncall-guide">
+      <h2>On-Call Roster</h2>
+      <p>Navigate to <strong>Orchestration &rarr; On-Call Roster</strong> to see who is available to handle tasks right now.</p>
+
+      <h3>Availability Statuses</h3>
+      <table>
+        <tr><th>Status</th><th>Meaning</th></tr>
+        <tr><td><span class="badge badge-green">Available</span></td><td>Ready to take new assignments</td></tr>
+        <tr><td><span class="badge badge-amber">Busy</span></td><td>Currently working, has capacity limit</td></tr>
+        <tr><td><span class="badge badge-blue">On Call</span></td><td>Standing by for urgent issues</td></tr>
+        <tr><td><span class="badge badge-purple">On Break</span></td><td>Temporarily unavailable</td></tr>
+        <tr><td><span class="badge badge-red">Off Duty</span></td><td>Not currently available</td></tr>
+      </table>
+
+      <h3>Managing Shifts</h3>
+      <p>Click the edit button on any person's roster entry to update their availability status, shift start/end times, and maximum workload capacity.</p>
+    </section>
+
+    <!-- ======== TASKS ======== -->
+    <section id="tasks-guide">
+      <h2>Running AI Tasks</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Tasks</strong> to manage AI-powered task execution.</p>
+
+      <h3>Executing a Task</h3>
+      <ol class="steps">
+        <li>Find a queued task in the task list</li>
+        <li>Click the <strong>Run Agent</strong> button to trigger AI execution</li>
+        <li>The AI will first check the Knowledge Base for existing answers</li>
+        <li>If no match is found, it calls the AI model to generate a response</li>
+        <li>View the output by clicking the <strong>View Output</strong> badge on completed tasks</li>
+      </ol>
+
+      <h3>Saving to Knowledge Base</h3>
+      <p>When a task completes successfully, you can click <strong>Save to Knowledge Base</strong> to publish the AI's output as a knowledge article. This helps future tasks find answers faster without consuming AI tokens.</p>
+    </section>
+
+    <!-- ======== WORKFLOWS ======== -->
+    <section id="workflows-guide">
+      <h2>Workflow Pipelines</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Workflows</strong> to manage multi-stage approval workflows.</p>
+
+      <h3>How Workflows Work</h3>
+      <p>Each workflow has a series of stages that can be:</p>
+      <ul>
+        <li><span class="badge badge-blue">Task</span> &mdash; A work item to complete</li>
+        <li><span class="badge badge-amber">Approval Gate</span> &mdash; Requires committee vote to proceed</li>
+        <li><span class="badge badge-green">Automated</span> &mdash; Runs automatically</li>
+        <li><span class="badge badge-purple">Notification</span> &mdash; Sends a stakeholder notification</li>
+      </ul>
+
+      <h3>Committees</h3>
+      <p>Switch to the <strong>Committees</strong> tab to manage your governance bodies. Committees include the Change Advisory Board (CAB), Security Review Board, Emergency Change Committee, and Problem Review Board. Each committee has defined members, a chair, and quorum requirements for voting.</p>
+    </section>
+
+    <!-- ======== KNOWLEDGE BASE ======== -->
+    <section id="kb-guide">
+      <h2>Knowledge Base</h2>
+      <p>Navigate to <strong>Orchestration &rarr; Knowledge Base</strong> to manage your ITIL knowledge articles.</p>
+
+      <h3>Using the Knowledge Base</h3>
+      <ul>
+        <li><strong>Search</strong> &mdash; Use the search bar to find articles by keyword</li>
+        <li><strong>Filter by category</strong> &mdash; Use the category tabs to narrow results</li>
+        <li><strong>Mark as helpful</strong> &mdash; Click the helpful button on useful articles to improve their ranking</li>
+        <li><strong>Create articles</strong> &mdash; Click <strong>Create Article</strong> to write new knowledge content</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> A well-maintained Knowledge Base saves AI costs. When an AI task finds a matching KB article, it uses the existing answer instead of calling the AI model &mdash; completely free.
+      </div>
+    </section>
+
+    <!-- ======== BCP ======== -->
+    <section id="bcp-guide">
+      <h2>BCP & DRP Planning</h2>
+      <p>Navigate to <strong>Orchestration &rarr; BCP / DRP</strong> to manage your business continuity and disaster recovery plans.</p>
+
+      <h3>BCP Plans Tab</h3>
+      <p>Create and manage Business Continuity Plans:</p>
+      <ol>
+        <li>Click <strong>Create BCP Plan</strong></li>
+        <li>Define the title, category (Operational/Financial/Technology/Personnel/Facilities), and business impact level</li>
+        <li>Set RTO and RPO targets in hours</li>
+        <li>List critical processes, recovery strategy, and stakeholders</li>
+        <li>Move the plan through its lifecycle: Draft &rarr; Under Review &rarr; Approved &rarr; Active</li>
+      </ol>
+
+      <h3>DRP Plans Tab</h3>
+      <p>Create and manage Disaster Recovery Plans, which can be linked to parent BCP plans:</p>
+      <ol>
+        <li>Click <strong>Create DRP Plan</strong></li>
+        <li>Select the disaster type and severity</li>
+        <li>Define affected systems, recovery procedures, and failover configuration</li>
+        <li>Optionally link it to an existing BCP plan</li>
+        <li>Run tests and record results (Passed/Failed/Partial)</li>
+      </ol>
+    </section>
+
+    <!-- ======== BCP LIFECYCLE ======== -->
+    <section id="lifecycle-guide">
+      <h2>BCP Lifecycle Management</h2>
+      <p>The BCP / DRP page includes four lifecycle tabs for comprehensive continuity management:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>Business Impact Analysis (BIA)</h4>
+          <p>Assess the impact of disruptions on each business process. Create BIA entries with RTO/RPO requirements, financial impact levels, and process dependency mappings.</p>
+        </div>
+        <div class="card">
+          <h4>Risk Register</h4>
+          <p>Identify and track risks. Each risk entry includes likelihood, impact rating, mitigation strategy, and current status (Identified, Mitigated, Accepted, or Transferred).</p>
+        </div>
+        <div class="card">
+          <h4>Drills & Exercises</h4>
+          <p>Schedule BCP/DRP drills, track their execution, and record outcomes. Drill statuses: Scheduled &rarr; In Progress &rarr; Completed or Cancelled.</p>
+        </div>
+        <div class="card">
+          <h4>Reviews</h4>
+          <p>Conduct periodic reviews of your BCP/DRP plans. Track review progress (Pending &rarr; In Progress &rarr; Completed) and document findings and improvement actions.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== LEADERBOARD ======== -->
+    <section id="leaderboard-guide">
+      <h2>Leaderboard & Gamification</h2>
+      <p>Navigate to <strong>AI Operations &rarr; Leaderboard</strong> to see how your agents rank against each other.</p>
+
+      <h3>How Points Work</h3>
+      <table>
+        <tr><th>Action</th><th>XP Earned</th></tr>
+        <tr><td>Resolve an incident</td><td>100 XP</td></tr>
+        <tr><td>Fulfill a service request</td><td>50 XP</td></tr>
+        <tr><td>Resolve a critical incident</td><td>+200 XP bonus</td></tr>
+        <tr><td>Resolve in under 2 hours</td><td>+75 XP speed bonus</td></tr>
+      </table>
+
+      <h3>Rank Progression</h3>
+      <p>Agents progress through ranks every 3 levels:</p>
+      <div class="flow-diagram">
+        <span class="flow-step">Bronze</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Silver</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Gold</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Platinum</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Diamond</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Legendary</span>
+      </div>
+      <p>The leaderboard features a Top 3 podium, full rankings table with XP bars, streak tracking, and resolution speed metrics.</p>
+    </section>
+
+    <!-- ======== TROUBLESHOOTING ======== -->
+    <section id="troubleshooting">
+      <h2>Troubleshooting</h2>
+
+      <div class="card">
+        <h4>My probe isn't connecting</h4>
+        <p>Ensure the probe agent script is running on the target server, and that outbound HTTPS traffic on port 443 is allowed. Check the probe status in Configure &mdash; it should show "Heartbeat" with a recent timestamp.</p>
+      </div>
+
+      <div class="card">
+        <h4>AI agents aren't generating responses</h4>
+        <p>Check that you have at least one AI provider configured in Service Metrics &rarr; AI Providers. Verify the API key is valid by using the "Test" button. Also check that you have AI Shadow enabled on your role subscriptions.</p>
+      </div>
+
+      <div class="card">
+        <h4>I'm getting "Please wait a moment" messages in Agent Chat</h4>
+        <p>This is the built-in rate limiter preventing duplicate API calls. Wait 5 seconds between messages. This protects your AI budget from accidental rapid-fire requests.</p>
+      </div>
+
+      <div class="card">
+        <h4>Incident/Change won't transition to the next status</h4>
+        <p>ITIL lifecycle transitions follow a specific order. For example, you can't move an incident from "Open" directly to "Resolved" &mdash; it must go through "Investigating" and "In Progress" first. Check the lifecycle pipeline diagram for the correct order.</p>
+      </div>
+
+      <div class="card">
+        <h4>No assets are appearing after adding a probe</h4>
+        <p>After deploying a probe, you need to run a discovery scan. Go to Infrastructure &rarr; Discovery, select your probe, and trigger a scan. Make sure the credentials you've assigned are correct for the devices on your network.</p>
+      </div>
+
+      <div class="card">
+        <h4>The page shows "Showing 0 of 0" with no data</h4>
+        <p>Make sure you're logged in with the correct account. All data is scoped to your user. If you're on a fresh account, you may need to go through onboarding and set up probes first to generate data.</p>
+      </div>
+    </section>
+
+    <!-- ======== FAQ ======== -->
+    <section id="faq">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="card">
+        <h4>What's the difference between a Crew and an Agent?</h4>
+        <p>A <strong>Crew</strong> is a department (e.g., Security Operations, Network Operations). An <strong>Agent</strong> is a specific role within that department (e.g., Security Monitor, Network Engineer). Think of Crews as teams and Agents as the roles on those teams.</p>
+      </div>
+
+      <div class="card">
+        <h4>Do AI agents replace my human team?</h4>
+        <p>No. AI agents are designed to work alongside your human team. They handle routine monitoring, generate alerts, and propose actions &mdash; but critical decisions always require human approval. The platform follows a "human-first" philosophy.</p>
+      </div>
+
+      <div class="card">
+        <h4>How much does AI usage cost?</h4>
+        <p>AI costs depend on usage volume. Use the AI Cost Estimator (Service Metrics tab) to see projected costs. HOLOCRON AI includes template caching and rate limiting that can reduce costs by up to 91% compared to raw API usage.</p>
+      </div>
+
+      <div class="card">
+        <h4>What is RTO and RPO?</h4>
+        <p><strong>RTO (Recovery Time Objective)</strong> is the maximum acceptable time to restore a service after a disruption. <strong>RPO (Recovery Point Objective)</strong> is the maximum acceptable amount of data loss measured in time. For example, an RPO of 1 hour means you can afford to lose up to 1 hour of data.</p>
+      </div>
+
+      <div class="card">
+        <h4>Can I use my own AI provider?</h4>
+        <p>Yes. Go to Service Metrics &rarr; AI Providers to add your own OpenAI, Google Gemini, Anthropic Claude, or any OpenAI-compatible provider. You can even assign different providers to different agent roles.</p>
+      </div>
+
+      <div class="card">
+        <h4>What types of probes can I deploy?</h4>
+        <p>Three types: <strong>Coupled</strong> (always connected, real-time), <strong>Semi-Autonomous</strong> (works offline, syncs periodically), and <strong>Fully Autonomous</strong> (self-contained, can self-remediate). Coupled is best for reliable networks, Autonomous is best for remote or unreliable locations.</p>
+      </div>
+
+      <div class="card">
+        <h4>How do I get the best results from Agent Chat?</h4>
+        <p>Be specific in your questions. For infrastructure queries, mention the device name or type. For dashboards, ask for a "dashboard" or "overview" explicitly. For general knowledge, just ask naturally &mdash; the AI will switch to Strategic Advisor mode automatically.</p>
+      </div>
+
+      <div class="card">
+        <h4>What ITIL processes does HOLOCRON AI support?</h4>
+        <p>Incident Management, Problem Management, Change Management, Service Request Management, Knowledge Management, Business Continuity Management (BCP/DRP), and Service Level Management. All follow standard ITIL lifecycle patterns with validated status transitions.</p>
+      </div>
+    </section>
+
+    <div style="margin-top:60px; padding-top:24px; border-top:1px solid var(--border); text-align:center;">
+      <p style="font-size:12px; color:var(--text-muted);">HOLOCRON AI &mdash; User Manual v2.0 &mdash; For additional technical details, see the <a href="/documentation">Technical Documentation</a></p>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>

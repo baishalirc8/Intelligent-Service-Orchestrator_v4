@@ -1,0 +1,18 @@
+FROM node:20-alpine AS build
+WORKDIR /build
+COPY probe-auto.ts .
+RUN npm install -g typescript && tsc --target ES2022 --module commonjs --esModuleInterop --outDir /build/dist probe-auto.ts
+
+FROM gcr.io/distroless/nodejs20-debian12
+WORKDIR /app
+COPY --from=build /build/dist/probe-auto.js .
+VOLUME /var/lib/holocron/autonomous
+ENV HOLOCRON_TOKEN=""
+ENV HOLOCRON_API=""
+ENV HOLOCRON_DATA_DIR="/var/lib/holocron/autonomous"
+ENV HOLOCRON_REMEDIATION="true"
+ENV HOLOCRON_MAX_ENTRIES="50000"
+ENV OPENAI_API_KEY=""
+ENV OPENAI_MODEL="gpt-4o"
+ENV HEARTBEAT_INTERVAL="300"
+CMD ["probe-auto.js"]

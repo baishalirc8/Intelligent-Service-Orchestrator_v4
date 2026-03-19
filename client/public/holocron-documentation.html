@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOLOCRON AI - Technical Documentation</title>
+  <style>
+    :root {
+      --bg: #0a0a14;
+      --bg-card: #12121f;
+      --bg-card-hover: #1a1a2e;
+      --border: #1e1e3a;
+      --text: #e2e2f0;
+      --text-muted: #8888aa;
+      --accent: #6366f1;
+      --accent-dim: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --sidebar-w: 280px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 24px 0;
+      z-index: 100;
+    }
+    .sidebar-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .sidebar-header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+    .sidebar-header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .nav-section {
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      padding: 8px 8px 4px;
+    }
+    .nav-link {
+      display: block;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      border-radius: 6px;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      background: var(--accent-glow);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-link.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 40px 60px 80px;
+      max-width: 960px;
+    }
+    .content h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .content .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+    .content h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .content h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 28px 0 10px;
+      color: var(--accent);
+    }
+    .content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 20px 0 8px;
+      color: var(--text);
+    }
+    .content p {
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .content ul, .content ol {
+      margin: 8px 0 16px 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .content li { margin-bottom: 6px; }
+    .content li strong { color: var(--text); }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .card-grid .card { margin: 0; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+    .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+    .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+    .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      color: var(--text);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    code {
+      background: rgba(99, 102, 241, 0.1);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      color: var(--accent);
+    }
+    pre {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 12px 0 20px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-muted);
+    }
+
+    .flow-diagram {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin: 8px 0 16px;
+    }
+    .flow-step {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .flow-arrow { color: var(--text-muted); font-size: 12px; }
+
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .content { margin-left: 0; padding: 24px 20px 60px; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h1>HOLOCRON AI</h1>
+      <p>Technical Documentation</p>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Overview</div>
+      <a class="nav-link" href="#overview">Platform Overview</a>
+      <a class="nav-link" href="#architecture">System Architecture</a>
+      <a class="nav-link" href="#tech-stack">Technology Stack</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Organization</div>
+      <a class="nav-link" href="#crews-agents">Crews & Agents</a>
+      <a class="nav-link" href="#onboarding">Onboarding</a>
+      <a class="nav-link" href="#ai-shadow">AI Shadow Agents</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Infrastructure</div>
+      <a class="nav-link" href="#cockpit">Cockpit</a>
+      <a class="nav-link" href="#configuration">Configuration</a>
+      <a class="nav-link" href="#discovery">Discovery & Probes</a>
+      <a class="nav-link" href="#asset-management">Asset Management</a>
+      <a class="nav-link" href="#event-management">Event Management</a>
+      <a class="nav-link" href="#performance">Performance</a>
+      <a class="nav-link" href="#app-monitor">Application Monitor</a>
+      <a class="nav-link" href="#service-metrics">Service Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">AI Operations</div>
+      <a class="nav-link" href="#agent-matrix">Agent Matrix</a>
+      <a class="nav-link" href="#agent-chat">Agent Chat</a>
+      <a class="nav-link" href="#ops-console">Ops Console</a>
+      <a class="nav-link" href="#ai-providers">AI Providers</a>
+      <a class="nav-link" href="#ai-cost">AI Cost Management</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">ITSM Suite</div>
+      <a class="nav-link" href="#incidents">Incidents</a>
+      <a class="nav-link" href="#problems">Problems</a>
+      <a class="nav-link" href="#changes">Changes</a>
+      <a class="nav-link" href="#service-requests">Service Requests</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Orchestration</div>
+      <a class="nav-link" href="#on-call">On-Call Roster</a>
+      <a class="nav-link" href="#tasks">Task Management</a>
+      <a class="nav-link" href="#workflows">Workflows</a>
+      <a class="nav-link" href="#knowledge-base">Knowledge Base</a>
+      <a class="nav-link" href="#bcp-drp">BCP / DRP</a>
+      <a class="nav-link" href="#bcp-lifecycle">BCP Lifecycle</a>
+      <a class="nav-link" href="#leaderboard">Leaderboard</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Technical</div>
+      <a class="nav-link" href="#api-reference">API Reference</a>
+      <a class="nav-link" href="#auth">Authentication</a>
+      <a class="nav-link" href="#database">Database Schema</a>
+      <a class="nav-link" href="#security">Security</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="version-badge">v2.0 &mdash; Enterprise Edition</div>
+    <h1>HOLOCRON AI Technical Documentation</h1>
+    <p class="subtitle">Comprehensive technical reference for the Automation Orchestration Platform</p>
+
+    <!-- ======== OVERVIEW ======== -->
+    <section id="overview">
+      <h2>1. Platform Overview</h2>
+      <p>HOLOCRON AI is an enterprise-grade SaaS Automation Orchestration Platform that transforms IT operations management through a human-first AI approach. The platform implements a CIO-level organizational hierarchy where departments are represented as <strong>"Crews"</strong> and roles as <strong>"Agents"</strong>, inspired by CrewAI multi-agent orchestration patterns.</p>
+
+      <div class="card">
+        <h4>Core Value Proposition</h4>
+        <ul>
+          <li><strong>Human-First Design</strong> &mdash; Assign human team members to IT roles first, then optionally enable AI shadow agents to augment capacity</li>
+          <li><strong>Autonomous Infrastructure Management</strong> &mdash; Proactive monitoring, AI-driven discovery, and closed-loop remediation</li>
+          <li><strong>ITIL-Aligned ITSM</strong> &mdash; Full incident, problem, change, and service request lifecycle management</li>
+          <li><strong>Intelligent Cost Optimization</strong> &mdash; Template caching, cooldown guards, and dedup checks reduce AI API costs by up to 91%</li>
+          <li><strong>Enterprise Orchestration</strong> &mdash; Committee-driven workflows, on-call management, and knowledge-driven task execution</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======== ARCHITECTURE ======== -->
+    <section id="architecture">
+      <h2>2. System Architecture</h2>
+
+      <h3>High-Level Architecture</h3>
+      <p>The platform follows a modern full-stack architecture with a clear separation between frontend, backend, and data layers:</p>
+
+      <div class="card">
+        <pre><code>
+  Client (React + TypeScript)
+    |
+    |-- Vite Dev Server (HMR)
+    |-- TanStack Query (Data Layer)
+    |-- wouter (Routing)
+    |-- shadcn/ui (Components)
+    |
+  Express.js API Server
+    |
+    |-- Passport.js (Auth)
+    |-- Drizzle ORM (Data Access)
+    |-- OpenAI GPT-4o (AI Engine)
+    |
+  PostgreSQL Database
+    |
+    |-- Session Store (connect-pg-simple)
+    |-- Drizzle Migrations
+        </code></pre>
+      </div>
+
+      <h3>Organizational Hierarchy</h3>
+      <p>The platform implements a complete CIO-level organizational structure spanning 11 departments:</p>
+      <div class="card">
+        <p>CIO &rarr; CTO &rarr; VP &rarr; Director &rarr; Manager &rarr; Engineer</p>
+        <br />
+        <p><strong>Departments (Crews):</strong></p>
+        <ul>
+          <li>Executive, Security Operations, Network Operations, Cloud Operations</li>
+          <li>DevOps, Data Management, Infrastructure, Applications</li>
+          <li>IT Service Management, Compliance & Risk, End User Computing</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======== TECH STACK ======== -->
+    <section id="tech-stack">
+      <h2>3. Technology Stack</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h4>Frontend</h4>
+          <ul>
+            <li><span class="badge badge-blue">React</span> UI Framework</li>
+            <li><span class="badge badge-blue">TypeScript</span> Type Safety</li>
+            <li><span class="badge badge-cyan">Tailwind CSS</span> Styling</li>
+            <li><span class="badge badge-purple">shadcn/ui</span> Components</li>
+            <li><span class="badge badge-green">wouter</span> Client Routing</li>
+            <li><span class="badge badge-amber">TanStack Query</span> Data Fetching</li>
+            <li><span class="badge badge-blue">Lucide React</span> Icons</li>
+            <li><span class="badge badge-purple">Recharts</span> Charts</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Backend</h4>
+          <ul>
+            <li><span class="badge badge-green">Express.js</span> HTTP Server</li>
+            <li><span class="badge badge-green">Node.js</span> Runtime</li>
+            <li><span class="badge badge-blue">Drizzle ORM</span> Database ORM</li>
+            <li><span class="badge badge-amber">Passport.js</span> Authentication</li>
+            <li><span class="badge badge-purple">OpenAI GPT-4o</span> AI Engine</li>
+            <li><span class="badge badge-red">bcryptjs</span> Password Hashing</li>
+            <li><span class="badge badge-cyan">express-session</span> Sessions</li>
+            <li><span class="badge badge-blue">connect-pg-simple</span> Session Store</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Database</h3>
+      <p><span class="badge badge-blue">PostgreSQL</span> serves as the primary data store, managed through Drizzle ORM with type-safe schema definitions in <code>shared/schema.ts</code>. Session persistence uses <code>connect-pg-simple</code> for reliable session storage.</p>
+    </section>
+
+    <!-- ======== CREWS & AGENTS ======== -->
+    <section id="crews-agents">
+      <h2>4. Crews & Agents (Organization)</h2>
+      <p>The organizational chart is the foundation of the platform. Each <strong>Crew</strong> (department) contains multiple <strong>Agent</strong> roles with defined responsibilities and AI capabilities.</p>
+
+      <h3>Role Structure</h3>
+      <table>
+        <tr><th>Field</th><th>Description</th></tr>
+        <tr><td><code>name</code></td><td>Role title (e.g., "Network Monitor")</td></tr>
+        <tr><td><code>department</code></td><td>Crew assignment</td></tr>
+        <tr><td><code>level</code></td><td>Hierarchy level (CIO/CTO/VP/Director/Manager/Engineer)</td></tr>
+        <tr><td><code>responsibilities</code></td><td>Array of role duties</td></tr>
+        <tr><td><code>aiCapabilities</code></td><td>AI functions the shadow agent can perform</td></tr>
+        <tr><td><code>hasAiShadow</code></td><td>Whether AI automation is enabled</td></tr>
+      </table>
+
+      <h3>Subscription Model</h3>
+      <p>Users subscribe agents to roles via <code>role_subscriptions</code>. Each subscription can independently enable or disable the AI shadow agent. When enabled, the AI agent begins monitoring assigned assets and performing automated tasks within its capability scope.</p>
+    </section>
+
+    <!-- ======== ONBOARDING ======== -->
+    <section id="onboarding">
+      <h2>5. Onboarding</h2>
+      <p>New users go through an interactive onboarding wizard that captures company information, selects relevant departments, and configures initial agent assignments. The platform provides AI-generated recommendations for optimal role-to-agent mappings based on the company's industry and size.</p>
+
+      <h3>Onboarding Flow</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Welcome</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Company Info</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Select Crews</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">AI Recommendations</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Review & Deploy</span>
+      </div>
+
+      <h3>Guided Tour</h3>
+      <p>After onboarding, a contextual guided tour highlights key platform areas: the sidebar navigation, Crews & Agents page, Infrastructure Cockpit, AI Agent Chat, and Recommendations dashboard.</p>
+    </section>
+
+    <!-- ======== AI SHADOW ======== -->
+    <section id="ai-shadow">
+      <h2>6. AI Shadow Agents</h2>
+      <p>AI Shadow Agents are the autonomous digital workers that augment human team members. When enabled on a role subscription, the AI agent inherits the role's responsibilities and AI capabilities, then operates within defined guardrails.</p>
+
+      <div class="card">
+        <h4>AI Agent Lifecycle</h4>
+        <ol>
+          <li><strong>Activation</strong> &mdash; User enables AI shadow on a role subscription</li>
+          <li><strong>Profile Generation</strong> &mdash; AI generates a best-practice metric profile for the role</li>
+          <li><strong>Asset Assignment</strong> &mdash; Discovered assets are mapped to the agent based on type/protocol</li>
+          <li><strong>Monitoring</strong> &mdash; Agent begins continuous monitoring of assigned assets</li>
+          <li><strong>Alerting</strong> &mdash; Agent generates alerts when thresholds are breached</li>
+          <li><strong>Remediation</strong> &mdash; For critical alerts, AI proposes remediation scripts for human approval</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======== COCKPIT ======== -->
+    <section id="cockpit">
+      <h2>7. Infrastructure Cockpit</h2>
+      <p>The Cockpit is a NOC-style command center providing a real-time bird's-eye view of the entire infrastructure. It aggregates data from all discovery probes, monitored assets, AI agent coverage, and active alerts into a unified operational dashboard.</p>
+
+      <div class="card">
+        <h4>Cockpit KPIs</h4>
+        <ul>
+          <li>Total Assets &amp; Online/Offline counts</li>
+          <li>Active Alerts by severity (Critical / High / Warning)</li>
+          <li>AI Agent coverage percentage</li>
+          <li>Service health scores across monitored applications</li>
+          <li>Probe status and heartbeat health</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======== CONFIGURATION ======== -->
+    <section id="configuration">
+      <h2>8. Configuration</h2>
+      <p>The Configuration sub-section houses three core configuration modules:</p>
+
+      <h3>Configure (Probe Management)</h3>
+      <p>Deploy, manage, and monitor discovery probes. Supports credential management, probe clustering for horizontal scaling, and multi-credential linking for heterogeneous environments.</p>
+
+      <h3>Service Metrics Catalog</h3>
+      <p>Centralized registry of monitorable metrics with protocol, collection mode, thresholds, and units. Includes:</p>
+      <ul>
+        <li><strong>Metric Assignments</strong> &mdash; Map catalog metrics to specific assets</li>
+        <li><strong>Mission Critical Groups</strong> &mdash; Define priority metric groups</li>
+        <li><strong>AI Metrics Intelligence</strong> &mdash; GPT-4o powered metric-to-asset assignment</li>
+        <li><strong>Agent Best-Practice Profiles</strong> &mdash; Auto-generated metric profiles per AI agent role</li>
+        <li><strong>AI Cost Estimator</strong> &mdash; Interactive cost calculator for all 17 AI call types</li>
+        <li><strong>Cache Intelligence</strong> &mdash; Template cache management dashboard</li>
+        <li><strong>AI Providers</strong> &mdash; Multi-provider AI configuration (OpenAI, Gemini, Claude)</li>
+      </ul>
+
+      <h3>Application Monitor</h3>
+      <p>AI-powered application discovery and health tracking with dependency mapping, topology visualization, and application health scoring.</p>
+    </section>
+
+    <!-- ======== DISCOVERY ======== -->
+    <section id="discovery">
+      <h2>9. Discovery & Probes</h2>
+      <p>The Discovery system enables automated network scanning and device identification through deployable probe agents.</p>
+
+      <h3>Probe Architecture</h3>
+      <p>Three coupling modes define how probes operate relative to the central server:</p>
+
+      <table>
+        <tr><th>Mode</th><th>Connectivity</th><th>Capabilities</th></tr>
+        <tr>
+          <td><span class="badge badge-blue">Coupled</span></td>
+          <td>Constant server connection</td>
+          <td>Real-time telemetry, immediate command execution</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-amber">Semi-Autonomous</span></td>
+          <td>Offline-capable with buffering</td>
+          <td>Store-and-forward sync, local AI reasoning, JSONL buffer</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">Fully Autonomous</span></td>
+          <td>Zero server dependency</td>
+          <td>Container-based, on-device AI, self-remediation</td>
+        </tr>
+      </table>
+
+      <h3>Probe Agent Types</h3>
+      <div class="card-grid">
+        <div class="card">
+          <h4>Kernel-Direct (Recommended)</h4>
+          <p>Node.js probes reading directly from <code>/proc</code> and <code>/sys</code> kernel virtual filesystems. No shell dependencies. Run in distroless containers (~30MB).</p>
+          <ul>
+            <li><code>probe-coupled.ts</code> &mdash; Real-time telemetry</li>
+            <li><code>probe-semi.ts</code> &mdash; Buffered with local AI</li>
+            <li><code>probe-auto.ts</code> &mdash; Self-remediating autonomous</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>Shell Script (Legacy)</h4>
+          <p>Bash/PowerShell probes requiring OS userspace tools (curl, top, free, df).</p>
+          <ul>
+            <li><code>holocron-probe.sh</code> &mdash; Linux coupled</li>
+            <li><code>holocron-probe-semi.sh</code> &mdash; Linux semi-autonomous</li>
+            <li><code>holocron-probe-auto.sh</code> &mdash; Linux autonomous</li>
+            <li><code>holocron-probe.ps1</code> &mdash; Windows coupled</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Probe Clustering</h3>
+      <p>Horizontal scaling for probes via cluster nodes. Each node contributes metric collection capacity based on hardware tier:</p>
+      <table>
+        <tr><th>Tier</th><th>CPU</th><th>RAM</th><th>Max Metrics</th></tr>
+        <tr><td>Entry</td><td>2 cores</td><td>16 GB</td><td>1,500</td></tr>
+        <tr><td>Standard</td><td>4 cores</td><td>32 GB</td><td>3,000</td></tr>
+        <tr><td>Performance</td><td>4 cores</td><td>64 GB</td><td>5,000</td></tr>
+        <tr><td>Enterprise</td><td>8 cores</td><td>128 GB</td><td>10,000</td></tr>
+      </table>
+    </section>
+
+    <!-- ======== ASSET MANAGEMENT ======== -->
+    <section id="asset-management">
+      <h2>10. Asset Management</h2>
+      <p>Comprehensive CMDB for all discovered infrastructure assets. Each asset maintains detailed metadata including hardware specifications, software inventory, network configuration, security posture, compliance status, penetration test results, and vulnerability tracking.</p>
+
+      <h3>Asset Types</h3>
+      <p>Servers, switches, routers, firewalls, gateways, access points, storage, load balancers, and virtual machines.</p>
+
+      <h3>AI-Driven Features</h3>
+      <ul>
+        <li><strong>Multi-Agent Autonomous Scan</strong> &mdash; AI agents coordinate to scan and classify assets</li>
+        <li><strong>Deep Scan</strong> &mdash; AI-powered detailed analysis of individual assets</li>
+        <li><strong>Metric Intelligence</strong> &mdash; Automated metric-to-asset assignment</li>
+        <li><strong>Asset-to-Agent Mapping</strong> &mdash; Automatic assignment of assets to specialist AI agents based on device type and protocol</li>
+      </ul>
+    </section>
+
+    <!-- ======== EVENT MANAGEMENT ======== -->
+    <section id="event-management">
+      <h2>11. Event Management</h2>
+      <p>Unified event and alert management with AI-driven root cause analysis. Aggregates alerts from all monitored assets and provides severity-based triage.</p>
+
+      <div class="card">
+        <h4>Alert Lifecycle</h4>
+        <div class="flow-diagram">
+          <span class="flow-step">Detection</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Classification</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">AI Analysis</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Remediation Proposal</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Human Approval</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Execution</span><span class="flow-arrow">&rarr;</span>
+          <span class="flow-step">Resolution</span>
+        </div>
+      </div>
+
+      <h3>AI Auto-Remediation</h3>
+      <p>When a critical alert is detected, the platform can automatically generate remediation scripts through GPT-4o. These scripts go through an <strong>Approve-Then-Remediate</strong> pipeline: the AI proposes a fix, a human reviews and approves it, and then the system executes the remediation on the target asset.</p>
+    </section>
+
+    <!-- ======== PERFORMANCE ======== -->
+    <section id="performance">
+      <h2>12. Performance Monitoring</h2>
+      <p>Real-time infrastructure performance dashboards showing CPU, memory, disk, and network utilization trends across all monitored assets. Includes historical data visualization and threshold-based alerting.</p>
+    </section>
+
+    <!-- ======== APP MONITOR ======== -->
+    <section id="app-monitor">
+      <h2>13. Application Monitor</h2>
+      <p>AI-powered application discovery and health tracking system that identifies running services, maps dependencies between applications, and provides continuous health scoring.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li><strong>AI Discovery</strong> &mdash; Automatic identification of applications running on monitored assets</li>
+        <li><strong>Health Scoring</strong> &mdash; Real-time health scores based on CPU, memory, response time, and uptime</li>
+        <li><strong>Dependency Mapping</strong> &mdash; Topology visualization showing application interconnections</li>
+        <li><strong>Topology Categories</strong> &mdash; Grouping by criticality: Critical, High, Medium, Low</li>
+      </ul>
+    </section>
+
+    <!-- ======== SERVICE METRICS ======== -->
+    <section id="service-metrics">
+      <h2>14. Service Metrics</h2>
+      <p>Centralized metric catalog with four distinct views:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>Service Metrics View</h4>
+          <p>Browse and manage the full metric catalog with protocol, collection mode, and threshold configuration.</p>
+        </div>
+        <div class="card">
+          <h4>Device View</h4>
+          <p>See metrics assigned to specific discovered assets.</p>
+        </div>
+        <div class="card">
+          <h4>Mission Critical View</h4>
+          <p>Priority metric groups for critical business services.</p>
+        </div>
+        <div class="card">
+          <h4>Agent Profiles View</h4>
+          <p>AI-generated best-practice metric profiles per agent role.</p>
+        </div>
+      </div>
+
+      <h3>Operational Insights</h3>
+      <p>AI-generated predictive, preventive, and prescriptive measures for each AI agent role. These insights populate an <strong>Activity Calendar</strong> for human approval before autonomous execution.</p>
+    </section>
+
+    <!-- ======== AGENT MATRIX ======== -->
+    <section id="agent-matrix">
+      <h2>15. Agent Matrix</h2>
+      <p>Performance observability dashboard for all AI agents. Shows real-time agent status, task completion rates, response times, and workload distribution across the entire agent fleet.</p>
+    </section>
+
+    <!-- ======== AGENT CHAT ======== -->
+    <section id="agent-chat">
+      <h2>16. Agent Chat (NLP Interface)</h2>
+      <p>Natural language interface for interacting with AI agents. The chat system operates in two modes:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>Mode 1: Specialist Agent Routing</h4>
+          <p>Infrastructure, monitoring, security, and operational queries are routed to the most relevant specialist AI agent based on the user's subscribed roles.</p>
+        </div>
+        <div class="card">
+          <h4>Mode 2: Strategic Advisor</h4>
+          <p>General knowledge, project management, frameworks, best practices, and advisory queries are handled by the HOLOCRON AI Strategic Advisor using industry frameworks (ITIL, PMBOK, COBIT, TOGAF, etc.).</p>
+        </div>
+      </div>
+
+      <h3>Visual Dashboard Capability</h3>
+      <p>The chat can render inline dashboard widgets including KPI cards, health lists, alert summaries, data tables, status grids, and progress bars &mdash; all populated with real infrastructure data.</p>
+
+      <h3>Supported Widget Types</h3>
+      <table>
+        <tr><th>Type</th><th>Description</th></tr>
+        <tr><td><code>stat</code></td><td>KPI card with value, change, trend, color</td></tr>
+        <tr><td><code>health_list</code></td><td>Items with health scores (0-100) and status</td></tr>
+        <tr><td><code>alert_summary</code></td><td>Alert list with severity, message, device, time</td></tr>
+        <tr><td><code>table</code></td><td>Data table with headers and rows</td></tr>
+        <tr><td><code>status_grid</code></td><td>Grid of items with status indicators</td></tr>
+        <tr><td><code>progress</code></td><td>Progress bars with labels and values</td></tr>
+      </table>
+    </section>
+
+    <!-- ======== OPS CONSOLE ======== -->
+    <section id="ops-console">
+      <h2>17. Ops Console</h2>
+      <p>Real-time agent operations console providing visibility into task execution, agent activities, and system logs. Monitor what your AI agents are doing in real-time with detailed execution traces.</p>
+    </section>
+
+    <!-- ======== AI PROVIDERS ======== -->
+    <section id="ai-providers">
+      <h2>18. AI Providers</h2>
+      <p>Multi-provider AI system supporting multiple LLM backends. Configurable per-role or system-wide.</p>
+
+      <h3>Supported Providers</h3>
+      <ul>
+        <li><span class="badge badge-green">OpenAI</span> GPT-4o (default)</li>
+        <li><span class="badge badge-blue">Google</span> Gemini</li>
+        <li><span class="badge badge-purple">Anthropic</span> Claude</li>
+        <li><span class="badge badge-amber">Custom</span> OpenAI-compatible endpoints</li>
+      </ul>
+
+      <h3>Resolution Priority</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Role-Specific Provider</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">User Default Provider</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Environment Variable Fallback</span>
+      </div>
+    </section>
+
+    <!-- ======== AI COST ======== -->
+    <section id="ai-cost">
+      <h2>19. AI Cost Management</h2>
+      <p>Three-layer cost optimization system protecting all 17+ OpenAI API call sites:</p>
+
+      <div class="card">
+        <h4>Layer 1: Template Cache</h4>
+        <p>Caches AI-generated responses by asset type and agent role. At Enterprise scale (500 assets, ~20 types), reduces monthly cost from ~$2,373 to ~$204 (91% savings). 30-day TTL.</p>
+      </div>
+      <div class="card">
+        <h4>Layer 2: Cooldown Guards</h4>
+        <p>Per-endpoint rate limits preventing redundant API calls. Validates preconditions before consuming the cooldown window.</p>
+        <table>
+          <tr><th>Endpoint</th><th>Cooldown</th></tr>
+          <tr><td>Alert Analysis / Remediation</td><td>5 min</td></tr>
+          <tr><td>Calibration</td><td>30 min</td></tr>
+          <tr><td>Discovery / Topology</td><td>15 min</td></tr>
+          <tr><td>Health Refresh / Notifications</td><td>5-10 min</td></tr>
+          <tr><td>Deep Scan</td><td>10 min</td></tr>
+          <tr><td>Remediation Scripts</td><td>2 min</td></tr>
+          <tr><td>Agent Chat</td><td>5 sec</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h4>Layer 3: Deduplication Checks</h4>
+        <p>Before generating remediation scripts, the system checks the database for existing tasks matching the same recommendation. Returns cached results when found.</p>
+      </div>
+    </section>
+
+    <!-- ======== INCIDENTS ======== -->
+    <section id="incidents">
+      <h2>20. Incident Management</h2>
+      <p>ITIL-aligned incident lifecycle management for tracking, investigating, and resolving service disruptions.</p>
+
+      <h3>Lifecycle Pipeline</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Open</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Investigating</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Resolved</span>
+      </div>
+
+      <h3>KPIs</h3>
+      <ul>
+        <li>Total Incidents, Open, Investigating, Resolved</li>
+        <li>Critical severity count</li>
+        <li>Mean Time to Resolution (MTTR)</li>
+        <li>Severity distribution (Critical / High / Medium / Low)</li>
+      </ul>
+
+      <h3>Categories</h3>
+      <p>Malware, Network, Hardware, Software, Access, Performance, Data, Configuration, and more.</p>
+    </section>
+
+    <!-- ======== PROBLEMS ======== -->
+    <section id="problems">
+      <h2>21. Problem Management</h2>
+      <p>Root cause analysis and known error tracking for recurring incidents.</p>
+
+      <h3>Lifecycle Pipeline</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Open</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Investigating</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Root Cause Identified</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Resolved</span>
+      </div>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li><strong>Known Error Database</strong> &mdash; Track known errors with workarounds and affected services</li>
+        <li><strong>Root Cause Tracking</strong> &mdash; Document identified root causes for systemic improvements</li>
+        <li><strong>Average Resolution Time</strong> &mdash; Track problem resolution performance</li>
+      </ul>
+    </section>
+
+    <!-- ======== CHANGES ======== -->
+    <section id="changes">
+      <h2>22. Change Management</h2>
+      <p>ITIL change control with multi-stage approval workflows and risk assessment.</p>
+
+      <h3>Lifecycle Pipeline</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Draft</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Submitted</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Under Review</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Approved</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Scheduled</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Implemented</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Closed</span>
+      </div>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li><strong>Risk Assessment</strong> &mdash; Low / Medium / High / Critical risk levels</li>
+        <li><strong>Impact Analysis</strong> &mdash; Scope and business impact documentation</li>
+        <li><strong>Rollback Plans</strong> &mdash; Required rollback procedures for each change</li>
+        <li><strong>Success Rate Tracking</strong> &mdash; KPI for change implementation success</li>
+        <li><strong>Server-Side Validation</strong> &mdash; Invalid status transitions are rejected</li>
+      </ul>
+    </section>
+
+    <!-- ======== SERVICE REQUESTS ======== -->
+    <section id="service-requests">
+      <h2>23. Service Request Management</h2>
+      <p>Full service request lifecycle with SLA tracking and AI-powered auto-assignment.</p>
+
+      <h3>Lifecycle Pipeline</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">New</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Assigned</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">On Hold</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Pending Approval</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Fulfilled</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Closed</span>
+      </div>
+
+      <h3>Smart Features</h3>
+      <ul>
+        <li><strong>AI Auto-Assignment</strong> &mdash; Routes new SRs to the most relevant AI agent (e.g., access_request &rarr; Security Monitor, hardware &rarr; Asset Manager)</li>
+        <li><strong>SR&rarr;Incident Auto-Link</strong> &mdash; "Incident Report" type SRs automatically create linked Incident records</li>
+        <li><strong>SLA Indicators</strong> &mdash; On Track / At Risk / Breached status tracking</li>
+        <li><strong>12 Request Categories</strong> &mdash; Access, Hardware, Software, Network, Change, Information, and more</li>
+      </ul>
+    </section>
+
+    <!-- ======== ON-CALL ======== -->
+    <section id="on-call">
+      <h2>24. On-Call Roster</h2>
+      <p>ITIL-aligned personnel availability and shift management. Shows who is available to handle human tasks at any point in time.</p>
+
+      <h3>Availability Statuses</h3>
+      <table>
+        <tr><th>Status</th><th>Description</th></tr>
+        <tr><td><span class="badge badge-green">Available</span></td><td>Ready to take assignments</td></tr>
+        <tr><td><span class="badge badge-amber">Busy</span></td><td>Currently working on tasks</td></tr>
+        <tr><td><span class="badge badge-blue">On Call</span></td><td>Standby for urgent issues</td></tr>
+        <tr><td><span class="badge badge-purple">On Break</span></td><td>Temporary unavailability</td></tr>
+        <tr><td><span class="badge badge-red">Off Duty</span></td><td>Not available</td></tr>
+      </table>
+
+      <h3>KPIs</h3>
+      <p>Total Personnel, Available Now, On Call, Utilization %, Active Tasks with live workload counts from active incidents and service requests.</p>
+    </section>
+
+    <!-- ======== TASKS ======== -->
+    <section id="tasks">
+      <h2>25. Task Management</h2>
+      <p>AI-powered autonomous task execution with Knowledge Base integration.</p>
+
+      <h3>KB-First Execution</h3>
+      <p>Before consuming AI tokens, the task executor searches the Knowledge Base for matching articles. If a strong keyword match is found (3+ overlapping words with 100+ char content), the KB article is returned directly &mdash; zero tokens consumed. Otherwise, relevant KB articles are injected as context for more accurate AI responses.</p>
+
+      <h3>Task Lifecycle</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Queued</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Executing (AI)</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Completed / Failed</span>
+      </div>
+
+      <h3>Features</h3>
+      <ul>
+        <li><strong>Run Agent</strong> &mdash; One-click AI task execution</li>
+        <li><strong>Save to KB</strong> &mdash; Publish completed task outputs as Knowledge Base articles</li>
+        <li><strong>Retry</strong> &mdash; Re-execute failed tasks</li>
+        <li><strong>Priority Levels</strong> &mdash; Critical, High, Medium, Low</li>
+      </ul>
+    </section>
+
+    <!-- ======== WORKFLOWS ======== -->
+    <section id="workflows">
+      <h2>26. Workflow Orchestration</h2>
+      <p>Full orchestration engine with committee-driven approval gates for enterprise change governance.</p>
+
+      <h3>Stage Types</h3>
+      <table>
+        <tr><th>Type</th><th>Description</th></tr>
+        <tr><td><span class="badge badge-blue">Task</span></td><td>Standard work item</td></tr>
+        <tr><td><span class="badge badge-amber">Approval Gate</span></td><td>Requires committee vote to proceed</td></tr>
+        <tr><td><span class="badge badge-green">Automated</span></td><td>System-executed step</td></tr>
+        <tr><td><span class="badge badge-purple">Notification</span></td><td>Stakeholder communication</td></tr>
+      </table>
+
+      <h3>Committees</h3>
+      <p>Governance bodies that review and approve workflow stages:</p>
+      <ul>
+        <li><strong>CAB</strong> &mdash; Change Advisory Board</li>
+        <li><strong>Security Review Board</strong> &mdash; Security-focused approvals</li>
+        <li><strong>Emergency Change Committee</strong> &mdash; Fast-track critical changes</li>
+        <li><strong>Problem Review Board</strong> &mdash; Problem management oversight</li>
+      </ul>
+    </section>
+
+    <!-- ======== KNOWLEDGE BASE ======== -->
+    <section id="knowledge-base">
+      <h2>27. Knowledge Base</h2>
+      <p>Centralized ITIL knowledge article repository that also reduces AI token consumption by providing cached answers for common queries.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li><strong>Search</strong> &mdash; Keyword search across titles and content (ILIKE pattern matching)</li>
+        <li><strong>Categories</strong> &mdash; Organized by topic area</li>
+        <li><strong>Helpfulness Tracking</strong> &mdash; Users can mark articles as helpful</li>
+        <li><strong>Status Management</strong> &mdash; Published / Draft / Archived</li>
+        <li><strong>Auto-Population</strong> &mdash; AI task outputs can be saved directly as KB articles</li>
+      </ul>
+    </section>
+
+    <!-- ======== BCP/DRP ======== -->
+    <section id="bcp-drp">
+      <h2>28. BCP / DRP</h2>
+      <p>Business Continuity Planning and Disaster Recovery Planning module with full ITIL alignment.</p>
+
+      <h3>BCP Plans</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Draft</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Under Review</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Approved</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Active</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Expired</span>
+      </div>
+      <p>Categories: Operational, Financial, Technology, Personnel, Facilities. Each plan includes RTO/RPO targets, critical processes, recovery strategy, and stakeholder tracking.</p>
+
+      <h3>DRP Plans</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Draft</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Under Review</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Approved</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Active</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Testing</span>
+      </div>
+      <p>Disaster types: Natural Disaster, Cyber Attack, Hardware Failure, Power Outage, Data Breach, Network Failure, Pandemic. Includes failover configuration (automatic/manual/semi-automatic) and test result tracking.</p>
+    </section>
+
+    <!-- ======== BCP LIFECYCLE ======== -->
+    <section id="bcp-lifecycle">
+      <h2>29. BCP Lifecycle Management</h2>
+      <p>Full ITIL BCP lifecycle with four dedicated tabs for comprehensive continuity management:</p>
+
+      <div class="card-grid">
+        <div class="card">
+          <h4>Business Impact Analysis (BIA)</h4>
+          <p>Assess impact of disruptions on business processes. Track RTO/RPO requirements, financial impact, and process dependencies.</p>
+        </div>
+        <div class="card">
+          <h4>Risk Register</h4>
+          <p>Identify, assess, and track risks with mitigation strategies.</p>
+          <div class="flow-diagram" style="margin-top:8px">
+            <span class="flow-step">Identified</span><span class="flow-arrow">&rarr;</span>
+            <span class="flow-step">Mitigated / Accepted / Transferred</span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Drills & Exercises</h4>
+          <p>Schedule, execute, and review BCP/DRP drills.</p>
+          <div class="flow-diagram" style="margin-top:8px">
+            <span class="flow-step">Scheduled</span><span class="flow-arrow">&rarr;</span>
+            <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+            <span class="flow-step">Completed / Cancelled</span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>Reviews</h4>
+          <p>Periodic plan reviews and improvement tracking.</p>
+          <div class="flow-diagram" style="margin-top:8px">
+            <span class="flow-step">Pending</span><span class="flow-arrow">&rarr;</span>
+            <span class="flow-step">In Progress</span><span class="flow-arrow">&rarr;</span>
+            <span class="flow-step">Completed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== LEADERBOARD ======== -->
+    <section id="leaderboard">
+      <h2>30. Gamified Leaderboard</h2>
+      <p>Agent performance rankings with XP-based gamification to encourage operational excellence.</p>
+
+      <h3>XP Formula</h3>
+      <div class="card">
+        <ul>
+          <li><strong>100 XP</strong> per resolved incident</li>
+          <li><strong>50 XP</strong> per fulfilled service request</li>
+          <li><strong>200 XP</strong> bonus for critical severity incidents</li>
+          <li><strong>75 XP</strong> speed bonus for resolution under 2 hours</li>
+        </ul>
+      </div>
+
+      <h3>Rank Progression</h3>
+      <div class="flow-diagram">
+        <span class="flow-step">Bronze</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Silver</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Gold</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Platinum</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Diamond</span><span class="flow-arrow">&rarr;</span>
+        <span class="flow-step">Legendary</span>
+      </div>
+      <p>Rank advancement every 3 levels. Features include Top 3 podium, full rankings table with XP bars, streaks, and resolution speed metrics.</p>
+    </section>
+
+    <!-- ======== API REFERENCE ======== -->
+    <section id="api-reference">
+      <h2>31. API Reference</h2>
+      <p>All API endpoints follow RESTful conventions with JSON request/response bodies. Authentication is required for all endpoints except <code>/api/health</code> and authentication routes.</p>
+
+      <h3>Core API Groups</h3>
+      <table>
+        <tr><th>Group</th><th>Base Path</th><th>Methods</th></tr>
+        <tr><td>Authentication</td><td><code>/api/auth/*</code></td><td>POST login/register/logout, GET user</td></tr>
+        <tr><td>Organization</td><td><code>/api/org-roles</code></td><td>GET roles, departments</td></tr>
+        <tr><td>Subscriptions</td><td><code>/api/role-subscriptions</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Discovery</td><td><code>/api/discovery-probes</code></td><td>GET/POST/PATCH/DELETE + credentials, cluster</td></tr>
+        <tr><td>Assets</td><td><code>/api/discovered-assets</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Alerts</td><td><code>/api/agent-alerts</code></td><td>GET/POST/PATCH</td></tr>
+        <tr><td>Applications</td><td><code>/api/monitored-applications</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Topologies</td><td><code>/api/application-topologies</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Incidents</td><td><code>/api/incidents</code></td><td>GET/POST/PATCH + stats</td></tr>
+        <tr><td>Problems</td><td><code>/api/problems</code></td><td>GET/POST/PATCH + stats</td></tr>
+        <tr><td>Changes</td><td><code>/api/changes</code></td><td>GET/POST/PATCH + stats</td></tr>
+        <tr><td>Service Requests</td><td><code>/api/service-requests</code></td><td>GET/POST/PATCH + stats</td></tr>
+        <tr><td>Tasks</td><td><code>/api/agent-tasks</code></td><td>GET/POST/PATCH + execute</td></tr>
+        <tr><td>Workflows</td><td><code>/api/workflows</code></td><td>GET/POST/PATCH/DELETE + stages, stats</td></tr>
+        <tr><td>Committees</td><td><code>/api/committees</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Knowledge Base</td><td><code>/api/knowledge</code></td><td>GET/POST/PATCH/DELETE + search</td></tr>
+        <tr><td>BCP Plans</td><td><code>/api/bcp-plans</code></td><td>GET/POST/PATCH/DELETE + stats</td></tr>
+        <tr><td>DRP Plans</td><td><code>/api/drp-plans</code></td><td>GET/POST/PATCH/DELETE + stats</td></tr>
+        <tr><td>BIA Entries</td><td><code>/api/bia-entries</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Risk Assessments</td><td><code>/api/risk-assessments</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Drills</td><td><code>/api/drills</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Reviews</td><td><code>/api/reviews</code></td><td>GET/POST/PATCH/DELETE</td></tr>
+        <tr><td>Roster</td><td><code>/api/roster</code></td><td>GET + PATCH availability</td></tr>
+        <tr><td>Leaderboard</td><td><code>/api/leaderboard</code></td><td>GET</td></tr>
+        <tr><td>AI Providers</td><td><code>/api/ai-providers</code></td><td>GET/POST/PATCH/DELETE + test</td></tr>
+        <tr><td>AI Cache</td><td><code>/api/ai-cache</code></td><td>GET/DELETE + stats, cleanup</td></tr>
+        <tr><td>Agent Chat</td><td><code>/api/agent-chat/*</code></td><td>GET/POST conversations, messages (SSE stream)</td></tr>
+        <tr><td>Probe Downloads</td><td><code>/api/probe-download/*</code></td><td>GET probe scripts</td></tr>
+      </table>
+
+      <h3>Response Format</h3>
+      <p>All endpoints return JSON. List endpoints support server-side pagination where applicable. Error responses follow the pattern:</p>
+      <pre><code>{ "error": "Human-readable error message" }</code></pre>
+
+      <h3>Status Codes</h3>
+      <table>
+        <tr><th>Code</th><th>Meaning</th></tr>
+        <tr><td>200</td><td>Success</td></tr>
+        <tr><td>201</td><td>Created</td></tr>
+        <tr><td>400</td><td>Bad Request / Validation Error / Invalid Transition</td></tr>
+        <tr><td>401</td><td>Not Authenticated</td></tr>
+        <tr><td>403</td><td>Forbidden (IDOR protection)</td></tr>
+        <tr><td>404</td><td>Not Found</td></tr>
+        <tr><td>429</td><td>Too Many Requests (AI cooldown)</td></tr>
+        <tr><td>500</td><td>Internal Server Error</td></tr>
+      </table>
+    </section>
+
+    <!-- ======== AUTH ======== -->
+    <section id="auth">
+      <h2>32. Authentication & Sessions</h2>
+      <p>The platform uses session-based authentication with Passport.js local strategy.</p>
+
+      <div class="card">
+        <h4>Auth Stack</h4>
+        <ul>
+          <li><strong>Passport.js</strong> &mdash; Authentication middleware with local strategy</li>
+          <li><strong>express-session</strong> &mdash; Server-side session management</li>
+          <li><strong>connect-pg-simple</strong> &mdash; PostgreSQL-backed session store for reliability</li>
+          <li><strong>bcryptjs</strong> &mdash; Password hashing with salt rounds</li>
+        </ul>
+      </div>
+
+      <h3>Auth Endpoints</h3>
+      <table>
+        <tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
+        <tr><td><code>/api/auth/register</code></td><td>POST</td><td>Create new account</td></tr>
+        <tr><td><code>/api/auth/login</code></td><td>POST</td><td>Authenticate and create session</td></tr>
+        <tr><td><code>/api/auth/logout</code></td><td>POST</td><td>Destroy session</td></tr>
+        <tr><td><code>/api/auth/user</code></td><td>GET</td><td>Get current authenticated user</td></tr>
+        <tr><td><code>/api/auth/complete-onboarding</code></td><td>POST</td><td>Mark onboarding as complete</td></tr>
+      </table>
+    </section>
+
+    <!-- ======== DATABASE ======== -->
+    <section id="database">
+      <h2>33. Database Schema</h2>
+      <p>PostgreSQL database managed through Drizzle ORM. Schema definitions live in <code>shared/schema.ts</code> with type-safe insert schemas generated via <code>drizzle-zod</code>.</p>
+
+      <h3>Core Tables</h3>
+      <table>
+        <tr><th>Table</th><th>Purpose</th></tr>
+        <tr><td><code>users</code></td><td>User accounts with company info, onboarding state</td></tr>
+        <tr><td><code>org_roles</code></td><td>Organizational role definitions (agents)</td></tr>
+        <tr><td><code>role_subscriptions</code></td><td>User-role assignments with AI shadow toggle</td></tr>
+        <tr><td><code>discovery_probes</code></td><td>Deployed probe configurations</td></tr>
+        <tr><td><code>discovered_assets</code></td><td>CMDB asset records with full metadata</td></tr>
+        <tr><td><code>agent_alerts</code></td><td>Infrastructure alerts and events</td></tr>
+        <tr><td><code>monitored_applications</code></td><td>Application health records</td></tr>
+        <tr><td><code>application_topologies</code></td><td>Application dependency maps</td></tr>
+        <tr><td><code>incidents</code></td><td>ITIL incident records</td></tr>
+        <tr><td><code>problems</code></td><td>ITIL problem records</td></tr>
+        <tr><td><code>changes</code></td><td>ITIL change records</td></tr>
+        <tr><td><code>service_requests</code></td><td>ITIL service request records</td></tr>
+        <tr><td><code>agent_tasks</code></td><td>AI task queue</td></tr>
+        <tr><td><code>agent_workflows</code></td><td>Orchestration workflows</td></tr>
+        <tr><td><code>workflow_stages</code></td><td>Workflow pipeline stages</td></tr>
+        <tr><td><code>committees</code></td><td>Governance committees</td></tr>
+        <tr><td><code>knowledge_articles</code></td><td>ITIL knowledge base</td></tr>
+        <tr><td><code>bcp_plans</code></td><td>Business continuity plans</td></tr>
+        <tr><td><code>drp_plans</code></td><td>Disaster recovery plans</td></tr>
+        <tr><td><code>bia_entries</code></td><td>Business impact analyses</td></tr>
+        <tr><td><code>risk_assessments</code></td><td>Risk register entries</td></tr>
+        <tr><td><code>drills</code></td><td>BCP/DRP drill records</td></tr>
+        <tr><td><code>reviews</code></td><td>Periodic plan reviews</td></tr>
+        <tr><td><code>ai_template_cache</code></td><td>AI response template cache</td></tr>
+        <tr><td><code>ai_providers</code></td><td>Multi-provider AI configuration</td></tr>
+        <tr><td><code>agent_conversations</code></td><td>Chat conversation threads</td></tr>
+        <tr><td><code>agent_messages</code></td><td>Chat message history</td></tr>
+        <tr><td><code>probe_types</code></td><td>Probe taxonomy definitions</td></tr>
+        <tr><td><code>probe_credential_links</code></td><td>Multi-credential probe linking</td></tr>
+        <tr><td><code>probe_cluster_nodes</code></td><td>Probe cluster scaling nodes</td></tr>
+      </table>
+    </section>
+
+    <!-- ======== SECURITY ======== -->
+    <section id="security">
+      <h2>34. Security Architecture</h2>
+
+      <h3>Authentication Security</h3>
+      <ul>
+        <li>Password hashing with bcrypt (automatic salt)</li>
+        <li>Server-side sessions stored in PostgreSQL (not client-side tokens)</li>
+        <li>Session secrets via environment variables</li>
+        <li>CSRF protection through same-origin session cookies</li>
+      </ul>
+
+      <h3>Authorization & IDOR Protection</h3>
+      <ul>
+        <li>All <code>:id</code> routes verify resource ownership against the authenticated user</li>
+        <li>User-scoped queries prevent cross-tenant data access</li>
+        <li><code>requireAuth</code> middleware on all protected endpoints</li>
+      </ul>
+
+      <h3>API Security</h3>
+      <ul>
+        <li>Request body validation using Zod schemas</li>
+        <li>Server-side ITIL status transition validation (rejects invalid state changes)</li>
+        <li>Rate limiting on AI endpoints via cooldown guards</li>
+        <li>Input sanitization on all user-provided content</li>
+      </ul>
+
+      <h3>AI Security</h3>
+      <ul>
+        <li>API keys stored as environment secrets (never exposed to frontend)</li>
+        <li>AI provider credentials encrypted at rest</li>
+        <li>Remediation scripts require human approval before execution</li>
+        <li>Autonomous probe self-remediation limited to safe operations (kill process, clear cache, cleanup disk, throttle workload)</li>
+      </ul>
+    </section>
+
+    <div style="margin-top:60px; padding-top:24px; border-top:1px solid var(--border); text-align:center;">
+      <p style="font-size:12px; color:var(--text-muted);">HOLOCRON AI &mdash; Automation Orchestration Platform &mdash; Technical Documentation v2.0</p>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    document.querySelectorAll('section[id]').forEach(section => observer.observe(section));
+  </script>
+</body>
+</html>

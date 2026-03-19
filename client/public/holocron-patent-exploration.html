@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOLOCRON AI - Patent Exploration Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0f;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.7;
+  }
+
+  .doc-container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 60px 48px 100px;
+  }
+
+  .doc-header {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+
+  .doc-header .tag {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    margin-bottom: 20px;
+  }
+
+  .doc-header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #c7d2fe, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .doc-header .doc-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .doc-header .doc-meta span {
+    margin-right: 20px;
+  }
+
+  h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.3);
+    margin-top: 56px;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .executive-summary {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    padding: 28px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+  }
+
+  .patent-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .patent-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .patent-card.p1::before { background: linear-gradient(90deg, transparent, #8b5cf6, transparent); }
+  .patent-card.p2::before { background: linear-gradient(90deg, transparent, #06b6d4, transparent); }
+  .patent-card.p3::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
+  .patent-card.p4::before { background: linear-gradient(90deg, transparent, #f97316, transparent); }
+  .patent-card.p5::before { background: linear-gradient(90deg, transparent, #6366f1, transparent); }
+  .patent-card.p6::before { background: linear-gradient(90deg, transparent, #ef4444, transparent); }
+  .patent-card.p7::before { background: linear-gradient(90deg, transparent, #eab308, transparent); }
+  .patent-card.p8::before { background: linear-gradient(90deg, transparent, #14b8a6, transparent); }
+  .patent-card.p9::before { background: linear-gradient(90deg, transparent, #f472b6, transparent); }
+  .patent-card.p10::before { background: linear-gradient(90deg, transparent, #38bdf8, transparent); }
+
+  .patent-card .patent-num {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .patent-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .patent-card .patent-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .patent-section {
+    margin-bottom: 18px;
+  }
+
+  .patent-section h4 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+
+  .patent-section p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.75;
+  }
+
+  .patent-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .patent-section ul li {
+    padding: 5px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    line-height: 1.6;
+  }
+
+  .patent-section ul li::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .claim-list {
+    counter-reset: claim;
+  }
+
+  .claim-list li {
+    counter-increment: claim;
+    padding: 8px 0 8px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.7;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .claim-list li:last-child { border-bottom: none; }
+
+  .claim-list li::before {
+    content: counter(claim) ".";
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    margin-right: 8px;
+    display: none;
+  }
+
+  .strength-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.015);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .strength-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    width: 100px;
+    flex-shrink: 0;
+  }
+
+  .strength-meter {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .strength-value {
+    font-size: 12px;
+    font-weight: 700;
+    width: 50px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .prior-art-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+
+  .prior-art-table th {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.3);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .prior-art-table td {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: top;
+  }
+
+  .prior-art-table tr:last-child td { border-bottom: none; }
+
+  .gap-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .gap-high { background: rgba(34,197,94,0.12); color: #4ade80; }
+  .gap-medium { background: rgba(234,179,8,0.12); color: #facc15; }
+  .gap-low { background: rgba(249,115,22,0.12); color: #fb923c; }
+
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .strategy-card {
+    padding: 22px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+  }
+
+  .strategy-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .strategy-card p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+    margin-top: 16px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 12px 0 12px 20px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 18px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 2px solid rgba(99,102,241,0.4);
+    background: #0a0a0f;
+  }
+
+  .timeline-item h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .timeline-item .time-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(99,102,241,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .timeline-item p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.5;
+  }
+
+  .disclaimer {
+    margin-top: 60px;
+    padding: 24px;
+    background: rgba(249,115,22,0.04);
+    border: 1px solid rgba(249,115,22,0.1);
+    border-radius: 10px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.7;
+  }
+
+  .disclaimer strong {
+    color: rgba(249,115,22,0.6);
+  }
+
+  @media print {
+    body { background: #fff; color: #222; }
+    .patent-card { border: 1px solid #ddd; background: #fafafa; }
+    .doc-header h1 { color: #333; -webkit-text-fill-color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<div class="doc-container">
+
+  <div class="doc-header">
+    <div class="tag">Confidential Draft</div>
+    <h1>HOLOCRON AI<br>Patent Exploration & IP Strategy</h1>
+    <div class="doc-meta">
+      <span>Prepared: March 2026</span>
+      <span>Classification: Internal / Pre-Filing</span>
+      <span>Version: 2.0</span>
+    </div>
+  </div>
+
+  <div class="executive-summary">
+    This document identifies ten potentially patentable inventions within the HOLOCRON AI platform. Each invention is analyzed for novelty, non-obviousness, prior art differentiation, and patent strength. The analysis focuses on system-level innovations, novel methods, and unique architectural patterns that are not present in existing AIOps, ITSM, or infrastructure management solutions. Version 2.0 adds three new inventions covering the multi-protocol adaptive transport layer (P-008), the Knowledge-Base-First AI cost optimization engine (P-009), and the integrated ITIL-BCP lifecycle orchestration system (P-010).
+  </div>
+
+  <h2>I. Patentable Inventions</h2>
+
+  <!-- PATENT 1 -->
+  <div class="patent-card p1">
+    <span class="patent-num" style="background: rgba(139,92,246,0.15); color: #a78bfa;">Invention P-001</span>
+    <h3>Severity-Tiered Autonomous Remediation Engine</h3>
+    <div class="patent-subtitle">A system and method for dynamically gating autonomous infrastructure remediation based on alert severity classification, confidence scoring, and blast radius estimation</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer-implemented method for managing infrastructure alert remediation comprising: receiving an infrastructure alert with an associated severity classification; automatically initiating an AI-driven root cause analysis generating a proposed remediation plan with a confidence score; determining an autonomy tier based on the severity classification wherein alerts classified below a configurable severity threshold are remediated autonomously without human intervention while alerts at or above the threshold present the proposed plan for human approval before execution; executing the approved or autonomously-determined remediation actions; and recording all analysis, decisions, and actions to an immutable audit log.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method where AI remediation autonomy level is dynamically determined by alert severity, with different severity tiers receiving different levels of human oversight</li>
+        <li>A system that generates a complete remediation plan (root cause, impact, corrective actions, preventive measures) and makes an autonomous execute/escalate decision based on a composite score of severity, confidence, and estimated blast radius</li>
+        <li>A closed-loop pipeline where analysis, decision, execution, and audit happen within a single transaction without human intervention for qualifying alert severities</li>
+        <li>A configurable severity-to-autonomy mapping that allows organizations to set their own thresholds for autonomous vs. human-approved remediation</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>Existing solutions (PagerDuty, Datadog, ServiceNow ITOM) provide alert grouping and runbook automation but require explicit pre-written scripts. None implement a severity-tiered autonomy model where the system dynamically decides whether to self-remediate or escalate based on real-time analysis. IBM Watson AIOps performs root cause analysis but does not close the loop with autonomous execution.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 88%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
+      </div>
+      <span class="strength-value" style="color: #a78bfa;">Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 2 -->
+  <div class="patent-card p2">
+    <span class="patent-num" style="background: rgba(6,182,212,0.15); color: #22d3ee;">Invention P-002</span>
+    <h3>Domain-Expert Agent-to-Asset Neural Binding</h3>
+    <div class="patent-subtitle">A system for creating persistent, context-aware bindings between specialized AI agents and infrastructure assets based on domain expertise matching</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer system comprising: a plurality of specialized AI agent profiles each configured with domain-specific expertise, knowledge bases, and operational capabilities corresponding to specific infrastructure roles (e.g., Windows System Administrator, Database Administrator, Network Security Engineer); a discovered asset inventory containing infrastructure assets with classified types, protocols, operating systems, and running services; a binding engine that automatically creates persistent agent-to-asset mappings by matching agent specialization to asset characteristics; wherein each bound agent maintains a stateful context of its assigned assets including historical metrics, prior remediations, and learned baselines, enabling increasingly accurate analysis over time.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method for automatically mapping AI agents to discovered assets based on a multi-dimensional matching of agent domain expertise to asset type, OS family, protocol capabilities, and running services</li>
+        <li>A persistent binding where the AI agent accumulates context about its assigned assets over time, creating a stateful relationship that improves analytical accuracy</li>
+        <li>An organizational model where AI agents mirror human IT role hierarchies (Crews and Agents) and inherit the same scope of responsibility as their human counterparts</li>
+        <li>A system where cross-cutting roles (e.g., Vulnerability Management) operate across multiple assets without direct binding, while specialist roles maintain exclusive asset assignments</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>Existing monitoring tools assign data sources to dashboards but do not create intelligent agent-asset bindings with domain expertise matching. CrewAI and AutoGen provide multi-agent frameworks but operate on tasks, not persistent infrastructure relationships. No existing system maps AI agents to assets using role-based expertise matching with accumulated context.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 82%; background: linear-gradient(90deg, #06b6d4, #22d3ee);"></div>
+      </div>
+      <span class="strength-value" style="color: #22d3ee;">Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 3 -->
+  <div class="patent-card p3">
+    <span class="patent-num" style="background: rgba(34,197,94,0.15); color: #4ade80;">Invention P-003</span>
+    <h3>AI Agent Reliability Observability Matrix</h3>
+    <div class="patent-subtitle">A system and method for continuously monitoring and scoring the reliability, accuracy, and decision quality of autonomous AI agents in production infrastructure management</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A monitoring system comprising: a plurality of autonomous AI agents performing infrastructure management tasks including process termination, memory reclamation, disk cleanup, and workload throttling; a telemetry collection layer that captures each agent's decisions, actions, confidence scores, and outcomes; an observability matrix that computes real-time metrics including accuracy rate, hallucination frequency, confidence drift over time, false positive rate, mean time to remediation, and decision quality scores; a gamified performance system that awards experience points (XP) based on incident resolution (100 XP), service request fulfillment (50 XP), critical incident resolution (200 XP), and speed bonuses (75 XP) with ranked progression tiers; a drift detection engine that identifies when an agent's performance degrades below acceptable thresholds; and an alerting system that notifies human operators when AI agent reliability metrics indicate degradation, enabling proactive intervention before AI decisions cause operational harm.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method for computing a hallucination risk score for AI infrastructure agents by comparing proposed remediations against actual outcomes and historical patterns</li>
+        <li>A confidence drift detection algorithm that tracks an agent's confidence calibration over time and alerts when the agent becomes over-confident or under-confident relative to actual outcomes</li>
+        <li>An observability dashboard that provides real-time visibility into AI agent reliability metrics specifically designed for infrastructure management contexts</li>
+        <li>A feedback loop where observability metrics are used to dynamically adjust an agent's autonomy level — agents with declining accuracy are automatically shifted to require more human oversight</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>MLOps platforms (MLflow, Weights & Biases) monitor model training metrics but not production agent decision quality. LLM observability tools (LangSmith, Arize) track prompt/response quality but not in the context of autonomous infrastructure remediation. No existing platform provides an integrated observability matrix for AI agents performing real-time operational decisions on live infrastructure.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 91%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div>
+      </div>
+      <span class="strength-value" style="color: #4ade80;">Very Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 4 -->
+  <div class="patent-card p4">
+    <span class="patent-num" style="background: rgba(249,115,22,0.15); color: #fb923c;">Invention P-004</span>
+    <h3>Topology-Aware Cascade Failure Prediction for AI Remediation</h3>
+    <div class="patent-subtitle">A method for modeling business application topologies and predicting cascade failure scenarios to inform AI remediation decisions</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer-implemented method comprising: automatically discovering application services running on infrastructure assets; constructing multi-tier business application topology maps that identify presentation, application, and data tiers with their inter-dependencies; analyzing the topology to identify single points of failure (SPOFs) and compute redundancy scores; when an alert is received for an asset, simulating cascade failure scenarios across the topology graph to estimate the full blast radius; incorporating the cascade analysis and SPOF assessment into the AI remediation decision engine, enabling remediation plans that account for downstream service dependencies and potential collateral impact.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method where AI-generated business application topology maps are used as input to remediation decision-making, enabling the AI to consider service dependencies before executing corrective actions</li>
+        <li>A cascade failure simulation engine that models the propagation of failures across multi-tier application topologies to estimate blast radius before remediation is attempted</li>
+        <li>A SPOF detection algorithm that analyzes topology graphs for nodes without redundancy and factors SPOF risk into alert severity escalation</li>
+        <li>An impact analysis system that quantifies the business impact of both the original alert and each proposed remediation action in terms of affected services, users, and revenue exposure</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>APM tools (Dynatrace, AppDynamics) map service dependencies but do not use topology information to gate AI remediation decisions. ServiceNow CMDB stores relationships but does not perform cascade failure simulation. No existing system combines AI-generated topology discovery with cascade prediction as input to autonomous remediation planning.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 85%; background: linear-gradient(90deg, #f97316, #fb923c);"></div>
+      </div>
+      <span class="strength-value" style="color: #fb923c;">Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 5 -->
+  <div class="patent-card p5">
+    <span class="patent-num" style="background: rgba(99,102,241,0.15); color: #818cf8;">Invention P-005</span>
+    <h3>Natural Language to Live Infrastructure Dashboard Generation</h3>
+    <div class="patent-subtitle">A system for generating real-time interactive infrastructure dashboards from natural language queries through AI-powered intent interpretation and data binding</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer system comprising: a natural language processing interface that receives infrastructure-related queries in conversational form; an intent parser that identifies the queried metrics, assets, time ranges, and visualization preferences; a specialist routing engine that directs the query to the appropriate domain-expert AI agent based on the query's technical domain; a dashboard generation engine that dynamically constructs live, interactive data visualizations bound to real-time infrastructure metrics; and a rendering layer that presents the generated dashboard inline within the conversational interface, enabling users to iteratively refine their queries and receive updated visualizations without leaving the chat context.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method for converting natural language infrastructure queries into live, data-bound dashboard visualizations in real-time within a conversational interface</li>
+        <li>An intelligent routing system that analyzes the technical domain of a natural language query and directs it to a specialized AI agent with domain expertise in that area</li>
+        <li>A system where generated dashboards are interactive and bound to live data sources, updating in real-time rather than producing static snapshots</li>
+        <li>An iterative refinement loop where follow-up natural language queries modify the previously generated dashboard, enabling conversational dashboard building</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>BI tools (Tableau Ask Data, Power BI Q&A) support natural language queries but generate static charts from historical data, not live infrastructure dashboards. ChatGPT and Copilot can generate code for dashboards but do not create live, data-bound visualizations connected to real-time infrastructure. No existing system combines NLP parsing, specialist agent routing, and live dashboard generation for infrastructure management.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 78%; background: linear-gradient(90deg, #6366f1, #818cf8);"></div>
+      </div>
+      <span class="strength-value" style="color: #818cf8;">Moderate-Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 6 -->
+  <div class="patent-card p6">
+    <span class="patent-num" style="background: rgba(239,68,68,0.15); color: #f87171;">Invention P-006</span>
+    <h3>Human-First AI Shadow Agent Pricing & Governance Model</h3>
+    <div class="patent-subtitle">A business method and system for deploying AI agents as cost-optimized shadows of human IT roles with organizational governance controls</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A platform and method comprising: an organizational role hierarchy mirroring standard CIO reporting structures with departments (presented as "Crews") and roles (presented as "Agents"); a human-first assignment workflow where human team members are assigned to roles before AI capabilities are enabled; an AI shadow agent activation system that deploys AI agents as supplements to human role-holders, with AI agent pricing calculated as a configurable percentage (default 30%) of the burdened human market rate for that role; a governance model where AI shadow agents report to the same human manager as their human counterpart, maintaining organizational accountability; and a proactive communication channel where AI agents escalate findings, propose actions, and request approval from their designated human manager.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A pricing method where AI agent subscription costs are dynamically calculated as a percentage of the burdened human market rate for the equivalent role, adjusted by geography and experience level</li>
+        <li>A governance model where AI agents exist within a human organizational hierarchy and report to human managers through a structured communication channel</li>
+        <li>A deployment model where AI agents can only be activated as shadows of existing human role assignments, ensuring human-first organizational design</li>
+        <li>A proactive communication system where AI agents generate structured escalation messages to human managers including proposed actions, risk assessment, and approval requests</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>AI assistant platforms (GitHub Copilot, Microsoft 365 Copilot) provide AI capabilities but do not model organizational hierarchies or human-AI governance relationships. RPA platforms (UiPath, Automation Anywhere) deploy bots but price per automation, not as role-based shadows with human-relative pricing. No existing system implements a human-first AI shadow model with organizational governance and percentage-of-human-cost pricing.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 72%; background: linear-gradient(90deg, #ef4444, #f87171);"></div>
+      </div>
+      <span class="strength-value" style="color: #f87171;">Moderate</span>
+    </div>
+  </div>
+
+  <!-- PATENT 7 -->
+  <div class="patent-card p7">
+    <span class="patent-num" style="background: rgba(234,179,8,0.15); color: #facc15;">Invention P-007</span>
+    <h3>AI-Calibrated Dynamic Threshold Baseline Engine</h3>
+    <div class="patent-subtitle">A method for using AI analysis of historical infrastructure metrics to automatically calibrate and recommend monitoring thresholds that adapt to operational patterns</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A system and method comprising: collecting historical performance metrics from monitored infrastructure assets over a configurable baseline period; analyzing metric distributions, seasonal patterns, and anomaly frequency using AI models; generating recommended threshold values for each metric-asset combination that reflect normal operating baselines with configurable sensitivity margins; presenting recommendations to human operators with confidence scores and statistical justification; upon approval, automatically updating monitoring thresholds and recalibrating on a scheduled basis to adapt to changing infrastructure patterns; and detecting threshold drift where previously-calibrated thresholds no longer match current operational baselines.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A method where AI analyzes historical infrastructure metrics to propose statistically-justified monitoring thresholds specific to each asset and metric combination</li>
+        <li>A threshold drift detection system that identifies when calibrated thresholds diverge from current operational patterns and triggers recalibration</li>
+        <li>A human-in-the-loop approval workflow for AI-recommended thresholds that includes confidence scoring and statistical evidence</li>
+        <li>A continuous recalibration system that periodically re-analyzes baselines and proposes threshold adjustments to account for infrastructure changes</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>Monitoring tools (Prometheus, Zabbix, Nagios) use static thresholds set by humans. Anomaly detection tools (Datadog anomaly monitors, Dynatrace Davis AI) detect anomalies but do not generate recommended threshold values with justification. No existing system combines AI-driven threshold recommendation, human approval workflow, continuous recalibration, and drift detection in an integrated pipeline.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 75%; background: linear-gradient(90deg, #eab308, #facc15);"></div>
+      </div>
+      <span class="strength-value" style="color: #facc15;">Moderate-Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 8 -->
+  <div class="patent-card p8">
+    <span class="patent-num" style="background: rgba(20,184,166,0.15); color: #2dd4bf;">Invention P-008</span>
+    <h3>Priority-Ordered Multi-Protocol Adaptive Transport Chain for Edge Infrastructure Telemetry</h3>
+    <div class="patent-subtitle">A system and method for reliable telemetry delivery across heterogeneous network environments using priority-ordered, failover-capable multi-protocol transport chains spanning IP, mesh, serial, and radio-frequency networks</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer-implemented system comprising: a transport chain engine that manages nine distinct communication protocols (HTTPS, MQTT, WebSocket, CoAP, raw TCP, raw UDP, RS-232/RS-485 Serial, LoRa radio-frequency, and Reticulum mesh networking) each implementing a common transport interface with connect, disconnect, isConnected, and send operations; a priority-ordered failover mechanism that assigns each configured transport a numeric priority and attempts delivery via the highest-priority connected transport first, automatically cascading to lower-priority transports upon failure; a connection lifecycle manager that maintains persistent connections with protocol-specific heartbeat mechanisms (MQTT keepalive, WebSocket ping/pong, TCP socket monitoring); an HMAC-SHA256 message authentication layer applied to IP-based transports (HTTPS, WebSocket, TCP) that signs telemetry payloads before transmission; and a transport configuration system that allows operators to define transport chains via a single environment variable as a JSON array of protocol configurations, enabling field deployment across air-gapped OT/SCADA networks, LoRa mesh networks, satellite-linked environments, and conventional IP infrastructure without code modification.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A unified transport abstraction that bridges IP-based protocols (HTTPS, MQTT, WebSocket, CoAP, TCP, UDP), physical-layer serial protocols (RS-232/RS-485), radio-frequency protocols (LoRa AT-command), and cryptographic mesh protocols (Reticulum/rnsd) under a single send/receive interface for infrastructure telemetry</li>
+        <li>A priority-ordered failover chain where transport selection is dynamic based on real-time connectivity state, automatically cascading from high-priority to low-priority protocols without data loss or operator intervention</li>
+        <li>A method for deploying infrastructure monitoring probes to air-gapped OT/ICS/SCADA environments using serial or LoRa transport as primary, with automatic promotion to IP-based transports when network connectivity is restored</li>
+        <li>An HMAC-SHA256 message authentication mechanism applied to IP-based transports (HTTPS, WebSocket, TCP) that cryptographically signs telemetry payloads, with an extensible signing interface designed for adaptation to constrained transports (Serial, LoRa, Reticulum) where payload size limits may require alternative integrity mechanisms</li>
+        <li>A Reticulum mesh network transport integration that spawns a local Reticulum daemon (rnsd), auto-generates interface configurations (AutoInterface, TCPClient, Serial, RNode/LoRa), and delivers telemetry via the rncp utility to named destinations in a delay-tolerant, encrypted mesh topology</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>IoT platforms (AWS IoT Core, Azure IoT Hub, ThingsBoard) support MQTT and HTTP but do not extend to serial, LoRa AT-command, or Reticulum mesh protocols. OT/SCADA monitoring tools (Claroty, Nozomi Networks) operate on industrial networks but use proprietary protocols and do not implement priority-ordered failover chains. No existing infrastructure monitoring platform provides a unified transport abstraction spanning IP, serial, radio-frequency, and cryptographic mesh protocols with automatic priority-ordered failover and HMAC authentication across all channels.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 93%; background: linear-gradient(90deg, #14b8a6, #2dd4bf);"></div>
+      </div>
+      <span class="strength-value" style="color: #2dd4bf;">Very Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 9 -->
+  <div class="patent-card p9">
+    <span class="patent-num" style="background: rgba(244,114,182,0.15); color: #f472b6;">Invention P-009</span>
+    <h3>Knowledge-Base-First AI Cost Optimization Engine for Autonomous IT Operations</h3>
+    <div class="patent-subtitle">A system and method for minimizing AI inference costs in autonomous IT operations by implementing a multi-layer cost avoidance pipeline that prioritizes cached knowledge, template matching, and cooldown enforcement before invoking large language model inference</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer-implemented method for reducing AI inference costs in an autonomous IT operations platform comprising: a Knowledge-Base-First execution strategy where, upon receiving a task requiring AI analysis, the system first searches a centralized ITIL-aligned knowledge base for existing articles matching the task context before invoking any large language model; an AI template cache system that stores and retrieves previously generated AI responses indexed by task type, category, and context hash, serving cached responses when a sufficiently similar prior analysis exists; a cooldown guard mechanism that enforces minimum intervals between AI inference calls for identical or similar request patterns, preventing redundant API consumption during burst activity; a multi-provider AI routing system supporting OpenAI, Google Gemini, Anthropic Claude, and custom OpenAI-compatible endpoints configurable per organizational role, allowing cost optimization by routing different task types to different providers based on complexity and pricing; and AI usage analytics tracking cache hit rates, token consumption patterns, and cost-per-operation metrics.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>A hierarchical cost avoidance pipeline for AI-driven IT operations that evaluates, in order: (1) knowledge base search, (2) template cache lookup, (3) cooldown guard — only invoking LLM inference when all layers produce cache misses</li>
+        <li>A method where ITIL knowledge base articles serve as a primary intelligence source for AI agent task execution, reducing LLM token consumption by providing domain-specific context that eliminates the need for the model to reason from general knowledge</li>
+        <li>A template cache system that stores AI-generated analyses (root cause reports, remediation plans, operational insights, metric assignments) indexed by task type and context, enabling zero-cost retrieval of prior analyses for recurring operational patterns, with cache hit rate analytics</li>
+        <li>A per-endpoint cooldown guard that tracks AI invocation timestamps and rejects duplicate calls within a configurable minimum interval, preventing cost multiplication during alert storms or rapid user interactions</li>
+        <li>A multi-provider AI routing system that assigns different AI providers (OpenAI, Gemini, Claude, custom OpenAI-compatible endpoints) to different organizational roles, enabling cost optimization by matching provider pricing tiers to task complexity requirements</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>LLM cost optimization tools (Helicone, LangSmith, PromptLayer) provide usage tracking and caching at the prompt level but do not implement a domain-aware knowledge-base-first strategy that avoids inference entirely. Semantic caching solutions (GPTCache, Redis vector search) cache by embedding similarity but do not incorporate ITIL knowledge bases or cooldown guards. No existing system combines knowledge base pre-search, template caching, cooldown enforcement, and multi-provider routing in an integrated cost optimization pipeline specifically designed for autonomous IT operations.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 86%; background: linear-gradient(90deg, #ec4899, #f472b6);"></div>
+      </div>
+      <span class="strength-value" style="color: #f472b6;">Strong</span>
+    </div>
+  </div>
+
+  <!-- PATENT 10 -->
+  <div class="patent-card p10">
+    <span class="patent-num" style="background: rgba(56,189,248,0.15); color: #38bdf8;">Invention P-010</span>
+    <h3>Integrated ITIL-BCP Lifecycle Orchestration with AI-Driven Business Impact Analysis</h3>
+    <div class="patent-subtitle">A system and method for managing the full lifecycle of Business Continuity Plans (BCP) and Disaster Recovery Plans (DRP) within an ITIL-aligned IT Service Management platform, with business impact analysis, risk assessment, and drill management integrated alongside operational service management</div>
+
+    <div class="patent-section">
+      <h4>Abstract</h4>
+      <p>A computer-implemented platform comprising: a unified BCP/DRP lifecycle engine that manages business continuity and disaster recovery plans through configurable status stages (Draft, Under Review, Approved, Active, Expired, Testing); a Business Impact Analysis (BIA) module that quantifies operational and financial impact of process disruptions, defining Recovery Time Objectives (RTO) and Recovery Point Objectives (RPO) for critical business processes; a risk register that catalogs organizational risks with probability and impact scoring, linked to specific BCP/DRP plans and mitigation strategies; a drill and exercise management system that schedules, executes, and records the results of recovery testing with outcomes documented against plan objectives; a review and audit workflow that tracks periodic plan reviews with findings, recommendations, and change tracking; all implemented within the same platform as ITIL Incident, Problem, Change, and Service Request modules sharing a common data model, enabling operators to correlate continuity plans with operational service management data.</p>
+    </div>
+
+    <div class="patent-section">
+      <h4>Key Novel Claims</h4>
+      <ul class="claim-list">
+        <li>An integrated platform where Business Continuity Planning, Disaster Recovery Planning, Business Impact Analysis, Risk Assessment, Drill Management, and Plan Reviews are managed within the same system as ITIL Incident, Problem, Change, and Service Request modules, sharing a common data model and user interface</li>
+        <li>A BIA module that defines RTO and RPO targets for critical business processes alongside financial and operational impact quantification, stored in the same database as the CMDB and discovered asset inventories</li>
+        <li>A drill management system that records exercise outcomes including pass/fail results, lessons learned, and follow-up actions, with drills linked to specific BCP or DRP plan records for traceability</li>
+        <li>A review and audit workflow where plan reviews capture findings, recommendations, and whether changes are required, maintaining a historical audit trail of all review cycles for compliance documentation</li>
+        <li>A risk register that catalogs organizational risks with probability/impact scoring and links each risk to specific BCP/DRP plans and mitigation strategies within a unified platform</li>
+      </ul>
+    </div>
+
+    <div class="patent-section">
+      <h4>Prior Art Differentiation</h4>
+      <p>Dedicated BCP platforms (Fusion Risk Management, Castellan, Archer) provide continuity planning but operate as standalone systems disconnected from ITSM and infrastructure monitoring. ServiceNow offers both ITSM and GRC modules but as separate product suites that require separate licenses and configuration. No existing platform provides a unified data model where BCP/DRP plans, BIA entries, risk assessments, drills, and reviews coexist in the same database and UI as ITIL Incident, Problem, Change, and Service Request modules with shared infrastructure monitoring probe data.</p>
+    </div>
+
+    <div class="strength-bar">
+      <span class="strength-label">Patent Strength</span>
+      <div class="strength-meter">
+        <div class="strength-fill" style="width: 80%; background: linear-gradient(90deg, #0ea5e9, #38bdf8);"></div>
+      </div>
+      <span class="strength-value" style="color: #38bdf8;">Strong</span>
+    </div>
+  </div>
+
+  <h2>II. Prior Art Landscape</h2>
+
+  <table class="prior-art-table">
+    <thead>
+      <tr>
+        <th>Competitor / Technology</th>
+        <th>Capabilities</th>
+        <th>Gap vs. HOLOCRON</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">PagerDuty / Datadog</td>
+        <td>Alert aggregation, runbook automation, on-call management</td>
+        <td><span class="gap-badge gap-high">High Gap</span> No autonomous remediation, no AI analysis, no severity-tiered autonomy</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">ServiceNow ITOM / AIOps</td>
+        <td>CMDB, event management, predictive analytics, workflow automation</td>
+        <td><span class="gap-badge gap-medium">Medium Gap</span> Has event correlation but no closed-loop AI remediation or agent-asset binding</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">IBM Watson AIOps</td>
+        <td>Root cause analysis, anomaly detection, noise reduction</td>
+        <td><span class="gap-badge gap-medium">Medium Gap</span> Performs RCA but does not execute remediation; no multi-agent architecture</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">Dynatrace Davis AI</td>
+        <td>Automatic root cause detection, topology-aware monitoring</td>
+        <td><span class="gap-badge gap-medium">Medium Gap</span> Topology-aware but detection-only; no autonomous execution or AI observability</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">CrewAI / AutoGen / LangChain</td>
+        <td>Multi-agent task orchestration, LLM chains, tool-use frameworks</td>
+        <td><span class="gap-badge gap-high">High Gap</span> General-purpose agent frameworks; no infrastructure domain, no asset binding, no ITIL alignment</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">Splunk ITSI</td>
+        <td>Service intelligence, KPI monitoring, event analytics</td>
+        <td><span class="gap-badge gap-high">High Gap</span> Analytics and visualization only; no AI agents, no remediation, no NLP dashboards</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">UiPath / Automation Anywhere</td>
+        <td>RPA bots, process automation, attended/unattended bots</td>
+        <td><span class="gap-badge gap-high">High Gap</span> Script-based automation; no AI reasoning, no infrastructure domain expertise, no role-based model</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">AWS IoT Core / Azure IoT Hub</td>
+        <td>MQTT/HTTP device communication, device shadows, fleet management</td>
+        <td><span class="gap-badge gap-high">High Gap</span> IP-only protocols; no serial, LoRa, or Reticulum mesh; no priority-ordered failover chains for infrastructure telemetry</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">Helicone / LangSmith / GPTCache</td>
+        <td>LLM usage tracking, prompt caching, observability</td>
+        <td><span class="gap-badge gap-high">High Gap</span> Prompt-level caching only; no ITIL knowledge base pre-search, no cooldown guards, no multi-provider routing for IT operations</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 600; color: rgba(255,255,255,0.7);">Fusion Risk / Castellan / Archer</td>
+        <td>BCP planning, risk management, compliance</td>
+        <td><span class="gap-badge gap-medium">Medium Gap</span> Standalone BCP tools; no integration with live ITSM, CMDB, or infrastructure monitoring; no drill-vs-RTO measurement</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>III. IP Filing Strategy</h2>
+
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <h4 style="color: #a78bfa;">Priority 1: Core Engine Patents</h4>
+      <p>File P-001 (Severity-Tiered Autonomy) and P-003 (AI Observability Matrix) first. These represent the strongest claims with the highest novelty and the most defensible competitive moat. Estimated filing cost: $15-25K each for provisional + PCT.</p>
+    </div>
+    <div class="strategy-card">
+      <h4 style="color: #22d3ee;">Priority 2: Architecture Patents</h4>
+      <p>File P-002 (Agent-Asset Binding) and P-004 (Topology-Aware Remediation) as the second wave. These protect the platform's unique architectural patterns. Consider combining P-002 and P-004 into a single broader patent application.</p>
+    </div>
+    <div class="strategy-card">
+      <h4 style="color: #4ade80;">Priority 3: Interface Patents</h4>
+      <p>File P-005 (NLP-to-Dashboard) as a defensive patent. While the prior art field is evolving quickly, the specific combination of specialist routing + live data binding + iterative refinement is novel enough to pursue.</p>
+    </div>
+    <div class="strategy-card">
+      <h4 style="color: #fb923c;">Priority 4: Transport & Cost Innovation</h4>
+      <p>File P-008 (Multi-Protocol Transport Chain) alongside the Priority 1 patents. The 9-protocol transport layer with Reticulum mesh integration is highly novel with no comparable prior art. File P-009 (KB-First Cost Optimization) with the architecture wave. Both have strong technical implementation claims.</p>
+    </div>
+    <div class="strategy-card">
+      <h4 style="color: #38bdf8;">Priority 5: Business Methods & Compliance</h4>
+      <p>File P-006 (Human-First Shadow Model), P-007 (Threshold Calibration), and P-010 (ITIL-BCP Integration) last. Business method patents face higher scrutiny post-Alice, but the technical implementation details strengthen the claims. P-010 benefits from the integration claims tying BCP to live infrastructure monitoring.</p>
+    </div>
+  </div>
+
+  <h2>IV. Recommended Timeline</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="time-label">Month 1-2</div>
+      <h4>Provisional Filing: P-001, P-003 & P-008</h4>
+      <p>Engage patent counsel. File provisional applications for the three strongest inventions (Severity-Tiered Remediation, AI Observability Matrix, Multi-Protocol Transport Chain) to establish priority dates. P-008 has the highest novelty score (93%) and no comparable prior art. Document all technical specifications, flowcharts, and system diagrams.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="time-label">Month 3-4</div>
+      <h4>Prior Art Search & Freedom-to-Operate</h4>
+      <p>Commission professional prior art searches for all ten inventions. Conduct freedom-to-operate analysis. Special attention to P-008's Reticulum mesh claims — verify no patents exist for rnsd/rncp integration in monitoring contexts.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="time-label">Month 5-6</div>
+      <h4>Provisional Filing: P-002, P-004 & P-009</h4>
+      <p>File second wave covering Agent-Asset Binding, Topology-Aware Remediation, and KB-First Cost Optimization. P-009's multi-layer cost avoidance pipeline is highly differentiated from existing LLM caching solutions. Refine claims based on prior art search results.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="time-label">Month 8-10</div>
+      <h4>Non-Provisional Conversion: P-001, P-003 & P-008</h4>
+      <p>Convert the first provisionals to full non-provisional (utility) patent applications within the 12-month window. Include detailed specifications, drawings, and refined claims.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="time-label">Month 10-12</div>
+      <h4>PCT Filing for International Protection</h4>
+      <p>File PCT applications for P-001, P-003, and P-008 to preserve international filing rights. P-008's transport chain is particularly valuable in international markets with OT/industrial monitoring requirements. Evaluate which national phases to enter based on target markets.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="time-label">Month 12-18</div>
+      <h4>Remaining Filings & Portfolio Review</h4>
+      <p>File P-005, P-006, P-007, and P-010 based on updated market position. P-010 (ITIL-BCP Integration) may benefit from being combined with P-001 claims as a continuation-in-part. Review entire portfolio for continuation opportunities and dependent claims.</p>
+    </div>
+  </div>
+
+  <h2>V. Estimated Costs</h2>
+
+  <table class="prior-art-table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Per Patent</th>
+        <th>Total (10 Patents)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color: rgba(255,255,255,0.7);">Prior Art Search</td>
+        <td>$2,000 - $4,000</td>
+        <td>$20,000 - $40,000</td>
+      </tr>
+      <tr>
+        <td style="color: rgba(255,255,255,0.7);">Provisional Application</td>
+        <td>$5,000 - $8,000</td>
+        <td>$50,000 - $80,000</td>
+      </tr>
+      <tr>
+        <td style="color: rgba(255,255,255,0.7);">Non-Provisional (Utility)</td>
+        <td>$12,000 - $18,000</td>
+        <td>$120,000 - $180,000</td>
+      </tr>
+      <tr>
+        <td style="color: rgba(255,255,255,0.7);">PCT Filing</td>
+        <td>$4,000 - $6,000</td>
+        <td>$40,000 - $60,000</td>
+      </tr>
+      <tr>
+        <td style="color: rgba(255,255,255,0.7);">USPTO Filing + Examination Fees</td>
+        <td>$2,000 - $4,000</td>
+        <td>$20,000 - $40,000</td>
+      </tr>
+      <tr>
+        <td style="font-weight: 700; color: rgba(255,255,255,0.8);">Total Estimated Range</td>
+        <td></td>
+        <td style="font-weight: 700; color: #818cf8;">$250,000 - $400,000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> This document is an internal exploration of potentially patentable inventions and does not constitute legal advice. All claims, prior art assessments, and patent strength ratings are preliminary estimates based on architectural analysis. A formal freedom-to-operate analysis and professional prior art search by qualified patent counsel is required before filing any patent applications. Patentability determinations can only be made by the USPTO or equivalent patent offices after examination.
+  </div>
+
+</div>
+
+</body>
+</html>

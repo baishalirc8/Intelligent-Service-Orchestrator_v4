@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#020307" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="HOLOCRON Probe" />
+<title>HOLOCRON Probe — Local Management</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#020307;--surface:#08090f;--surface2:#0d0e18;--border:#1a1c2e;
+    --text:#e8eaf6;--muted:#5a5f7a;--blue:#3b82f6;--purple:#7c3aed;
+    --cyan:#06b6d4;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+    --violet:#8b5cf6;--indigo:#6366f1;
+  }
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+  a{color:var(--cyan);text-decoration:none}
+  button{cursor:pointer;border:none;outline:none;font-family:inherit}
+
+  /* Layout */
+  .app{display:flex;flex-direction:column;min-height:100vh}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(2,3,7,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed,#db2777);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;letter-spacing:-1px}
+  .logo-text{font-size:13px;font-weight:800;color:#fff;letter-spacing:0.5px}
+  .logo-sub{font-size:10px;color:var(--muted);font-weight:500}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;border:1px solid;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+  .pill-online{border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.1);color:#4ade80}
+  .pill-offline{border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.1);color:#f87171}
+  .pill-syncing{border-color:rgba(59,130,246,0.4);background:rgba(59,130,246,0.1);color:#60a5fa}
+  .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .dot-pulse{animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+  main{flex:1;padding:16px;max-width:640px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+
+  /* Cards */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .card-header{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .card-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .card-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px}
+  .card-body{padding:14px 16px}
+
+  /* KPI row */
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:480px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+  .kpi-value{font-size:20px;font-weight:900;line-height:1}
+  .kpi-label{font-size:10px;color:var(--muted);margin-top:4px;font-weight:500}
+
+  /* Toggle */
+  .toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+  .toggle-row:last-child{border-bottom:none;padding-bottom:0}
+  .toggle-info{flex:1;min-width:0}
+  .toggle-label{font-size:13px;font-weight:700;color:var(--text)}
+  .toggle-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45}
+  .toggle-badge{display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px}
+  .badge-purple{background:rgba(124,58,237,0.2);color:#a78bfa;border:1px solid rgba(124,58,237,0.3)}
+  .badge-amber{background:rgba(245,158,11,0.15);color:#fbbf24;border:1px solid rgba(245,158,11,0.25)}
+  .badge-blue{background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.25)}
+
+  .switch{position:relative;width:44px;height:24px;flex-shrink:0}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:#1e2030;border-radius:12px;transition:0.25s;border:1px solid var(--border);cursor:pointer}
+  .slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:#4b5563;border-radius:50%;transition:0.25s}
+  input:checked+.slider{background:rgba(99,102,241,0.25);border-color:rgba(99,102,241,0.5)}
+  input:checked+.slider::before{background:var(--indigo);transform:translateX(20px)}
+
+  /* Buffer bar */
+  .buffer-bar-wrap{background:var(--surface2);border-radius:6px;height:8px;overflow:hidden;margin-top:8px}
+  .buffer-bar{height:100%;border-radius:6px;transition:width 0.5s ease;background:linear-gradient(90deg,var(--cyan),var(--indigo))}
+
+  /* Logs */
+  .log-scroller{max-height:200px;overflow-y:auto;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:11px;line-height:1.7;color:var(--muted);background:var(--surface2);border-radius:8px;padding:10px 12px;border:1px solid var(--border)}
+  .log-scroller::-webkit-scrollbar{width:4px}
+  .log-scroller::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  .log-line{display:flex;gap:8px;align-items:baseline}
+  .log-time{color:#3b3f55;flex-shrink:0}
+  .log-level-info{color:var(--cyan)}
+  .log-level-warn{color:var(--amber)}
+  .log-level-error{color:var(--red)}
+  .log-level-ok{color:var(--green)}
+  .log-level-ai{color:var(--violet)}
+
+  /* Sync panel */
+  .sync-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+  .sync-field{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+  .sync-field-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
+  .sync-field-value{font-size:13px;font-weight:700;color:var(--text);margin-top:2px}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:700;transition:0.15s;cursor:pointer;border:1px solid}
+  .btn-primary{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.4);color:#a5b4fc}
+  .btn-primary:hover{background:rgba(99,102,241,0.35);border-color:rgba(99,102,241,0.6)}
+  .btn-danger{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#f87171}
+  .btn-danger:hover{background:rgba(239,68,68,0.2)}
+  .btn-green{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);color:#4ade80}
+  .btn-green:hover{background:rgba(34,197,94,0.2)}
+  .btn-sm{padding:6px 12px;font-size:11px}
+  .btn-full{width:100%}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* Model selector */
+  .model-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .model-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:0.15s;text-align:left}
+  .model-card:hover{border-color:rgba(99,102,241,0.4);background:rgba(99,102,241,0.06)}
+  .model-card.selected{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.12)}
+  .model-name{font-size:12px;font-weight:800;color:var(--text)}
+  .model-params{font-size:10px;color:var(--violet);font-weight:700;margin-top:1px}
+  .model-desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .model-ram{font-size:10px;color:var(--amber);margin-top:3px}
+
+  /* Section label */
+  .section-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:8px}
+
+  /* Footer */
+  footer{border-top:1px solid var(--border);padding:12px 16px;text-align:center;font-size:10px;color:var(--muted)}
+  footer span{color:#3b3f55}
+
+  /* Notification toast */
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:9999;transition:transform 0.3s,opacity 0.3s;opacity:0;pointer-events:none;white-space:nowrap}
+  #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  /* Mode badge */
+  .mode-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px}
+  .mode-semi{background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:#fbbf24}
+  .mode-auto{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#c4b5fd}
+  .mode-coupled{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">H</div>
+      <div>
+        <div class="logo-text">HOLOCRON Probe</div>
+        <div class="logo-sub" id="probe-name">Local Management Interface</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="mode-badge mode-semi" id="mode-badge">Semi-Autonomous</div>
+      <div class="status-pill pill-online" id="conn-pill">
+        <div class="dot dot-pulse"></div>
+        <span id="conn-label">Running</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- KPI row -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-value" id="kpi-uptime" style="color:var(--cyan)">—</div>
+        <div class="kpi-label">Uptime</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" id="kpi-events" style="color:var(--violet)">—</div>
+        <div class="kpi-label">Events Collected</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" id="kpi-buffer" style="color:var(--amber)">—</div>
+        <div class="kpi-label">Buffer Used</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value" id="kpi-inferences" style="color:var(--green)">—</div>
+        <div class="kpi-label">AI Inferences</div>
+      </div>
+    </div>
+
+    <!-- Local AI Reasoning -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#a78bfa">🧠</div>
+        <div>
+          <div class="card-title" style="color:#a78bfa">Local AI Reasoning</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Enable On-Device Reasoning <span class="toggle-badge badge-purple">Core Feature</span></div>
+            <div class="toggle-desc">Probe runs a local language model to reason about telemetry, generate root cause narratives, and make autonomous remediation decisions — without connecting to HOLOCRON.</div>
+          </div>
+          <label class="switch" style="margin-top:2px">
+            <input type="checkbox" id="toggle-reasoning" onchange="handleToggle(this,'reasoning')" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Autonomous Remediation <span class="toggle-badge badge-amber">Requires Reasoning</span></div>
+            <div class="toggle-desc">AI can take corrective action (restart services, block IPs, adjust thresholds) without waiting for HOLOCRON confirmation. Applies only within configured safety scope.</div>
+          </div>
+          <label class="switch" style="margin-top:2px">
+            <input type="checkbox" id="toggle-remediation" onchange="handleToggle(this,'remediation')" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Anomaly Pre-filter <span class="toggle-badge badge-blue">Efficiency</span></div>
+            <div class="toggle-desc">AI scores each event locally and discards noise before buffering. Reduces buffer consumption and sync payloads by up to 70%.</div>
+          </div>
+          <label class="switch" style="margin-top:2px">
+            <input type="checkbox" id="toggle-prefilter" checked onchange="handleToggle(this,'prefilter')" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- Model selector -->
+        <div style="margin-top:14px">
+          <div class="section-label">Local Reasoning Model</div>
+          <div class="model-grid">
+            <div class="model-card selected" onclick="selectModel(this,'phi3-mini')">
+              <div class="model-name">Phi-3 Mini</div>
+              <div class="model-params">3.8B parameters</div>
+              <div class="model-desc">Best for constrained devices. Fast inference, low power.</div>
+              <div class="model-ram">⚡ ~2 GB RAM</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'llama3-8b')">
+              <div class="model-name">Llama 3 8B</div>
+              <div class="model-params">8B parameters</div>
+              <div class="model-desc">Stronger reasoning. Recommended for edge servers.</div>
+              <div class="model-ram">⚡ ~5 GB RAM</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'mistral-7b')">
+              <div class="model-name">Mistral 7B</div>
+              <div class="model-params">7B parameters</div>
+              <div class="model-desc">Excellent at structured analysis and triage tasks.</div>
+              <div class="model-ram">⚡ ~4.5 GB RAM</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'gemma2-2b')">
+              <div class="model-name">Gemma 2 2B</div>
+              <div class="model-params">2B parameters</div>
+              <div class="model-desc">Ultra-lightweight. Ideal for mobile (Android/iOS).</div>
+              <div class="model-ram">⚡ ~1.2 GB RAM</div>
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <button class="btn btn-primary btn-full" onclick="applyModelChange()">Apply Model Selection</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buffer & Sync -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);color:#fbbf24">⏳</div>
+        <div>
+          <div class="card-title" style="color:#fbbf24">Buffer & Sync</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="sync-meta">
+          <div class="sync-field">
+            <div class="sync-field-label">Last Sync</div>
+            <div class="sync-field-value" id="last-sync">—</div>
+          </div>
+          <div class="sync-field">
+            <div class="sync-field-label">Next Sync</div>
+            <div class="sync-field-value" id="next-sync">—</div>
+          </div>
+          <div class="sync-field">
+            <div class="sync-field-label">Buffer Capacity</div>
+            <div class="sync-field-value" id="buf-cap">10,000 events</div>
+          </div>
+          <div class="sync-field">
+            <div class="sync-field-label">Buffered Now</div>
+            <div class="sync-field-value" id="buf-now" style="color:var(--amber)">—</div>
+          </div>
+        </div>
+        <div class="section-label">Buffer Fill Level</div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px">
+          <span>0</span><span id="buf-pct-label">—</span><span>10,000</span>
+        </div>
+        <div class="buffer-bar-wrap">
+          <div class="buffer-bar" id="buf-bar" style="width:0%"></div>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-primary btn-sm" onclick="forceSync()">⬆ Force Sync Now</button>
+          <button class="btn btn-danger btn-sm" onclick="flushBuffer()">🗑 Flush Buffer</button>
+        </div>
+
+        <div style="margin-top:14px">
+          <div class="section-label">Sync Strategy</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm selected-strategy" id="strat-opp" onclick="setStrategy('opportunistic')">Opportunistic</button>
+            <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" id="strat-sched" onclick="setStrategy('scheduled')">Scheduled</button>
+            <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" id="strat-manual" onclick="setStrategy('manual')">Manual Only</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety Scope -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171">🛡</div>
+        <div>
+          <div class="card-title" style="color:#f87171">Autonomous Action Scope</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Restart Failed Services</div>
+            <div class="toggle-desc">Probe may restart services that fail health checks without waiting for approval.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="scope-restart" checked onchange="handleScope(this,'restart')" /><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Block Suspicious IPs</div>
+            <div class="toggle-desc">Temporarily block IPs that match threat signatures. Blocks expire after 4 hours unless confirmed.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="scope-block" onchange="handleScope(this,'block')" /><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Adjust Alert Thresholds</div>
+            <div class="toggle-desc">AI can tune monitoring thresholds based on observed baseline — prevents alert fatigue.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="scope-thresh" checked onchange="handleScope(this,'thresh')" /><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-label">Execute Remediation Scripts</div>
+            <div class="toggle-desc">Run pre-approved remediation playbooks without HOLOCRON confirmation. High-risk — enable carefully.</div>
+          </div>
+          <label class="switch"><input type="checkbox" id="scope-scripts" onchange="handleScope(this,'scripts')" /><span class="slider"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Event Log -->
+    <div class="card">
+      <div class="card-header" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="card-icon" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);color:var(--cyan)">📋</div>
+          <div class="card-title" style="color:var(--cyan)">Live Event Log</div>
+        </div>
+        <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="card-body" style="padding:10px 12px">
+        <div class="log-scroller" id="log-output"></div>
+      </div>
+    </div>
+
+    <!-- Connection Settings -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);color:var(--indigo)">⚙</div>
+        <div class="card-title" style="color:var(--indigo)">Connection Settings</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div class="section-label">HOLOCRON Server URL</div>
+            <input id="cfg-server" type="text" placeholder="https://your-holocron.domain.com" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;font-family:inherit" />
+          </div>
+          <div>
+            <div class="section-label">Site Token</div>
+            <input id="cfg-token" type="password" placeholder="••••••••••••••••" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;font-family:inherit" />
+          </div>
+          <div>
+            <div class="section-label">Heartbeat Interval</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary btn-sm" id="hb-30" onclick="setHeartbeat(30)">30s</button>
+              <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" id="hb-60" onclick="setHeartbeat(60)">60s</button>
+              <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" id="hb-300" onclick="setHeartbeat(300)">5m</button>
+            </div>
+          </div>
+          <button class="btn btn-green btn-full" onclick="saveSettings()">✓ Save & Reconnect</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card" style="border-color:rgba(239,68,68,0.2)">
+      <div class="card-header">
+        <div class="card-icon" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171">⚠</div>
+        <div class="card-title" style="color:#f87171">Probe Control</div>
+      </div>
+      <div class="card-body">
+        <div class="btn-row">
+          <button class="btn btn-primary btn-sm" onclick="restartProbe()">↺ Restart Probe</button>
+          <button class="btn btn-danger btn-sm" onclick="stopProbe()">⏹ Stop Probe</button>
+          <button class="btn btn-sm" style="background:var(--surface2);border-color:var(--border);color:var(--muted)" onclick="factoryReset()">Factory Reset</button>
+        </div>
+        <div style="margin-top:10px;padding:10px 12px;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:8px;font-size:10px;color:var(--muted);line-height:1.6">
+          Factory reset wipes all local configuration, clears the buffer, and removes cached AI reasoning state. The probe will need to be re-enrolled via HOLOCRON.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    HOLOCRON Probe Local UI · v1.0.0 · <span id="footer-mode">Semi-Autonomous</span> · Port 7788<br />
+    <span>For full orchestration, visit your HOLOCRON instance</span>
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+const state = {
+  mode: detectMode(),
+  reasoning: false,
+  remediation: false,
+  prefilter: true,
+  model: 'phi3-mini',
+  strategy: 'opportunistic',
+  heartbeat: 30,
+  buffer: { used: 0, capacity: 10000 },
+  stats: { uptime: 0, events: 0, inferences: 0 },
+  scope: { restart: true, block: false, thresh: true, scripts: false },
+  logs: [],
+};
+
+function detectMode() {
+  const p = new URLSearchParams(location.search);
+  return p.get('mode') || 'semi-autonomous';
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  applyMode(state.mode);
+  loadFromLocalStorage();
+  startSimulation();
+  addLog('info','Probe local UI initialised');
+  addLog('ok',  'Heartbeat active — collecting telemetry');
+  addLog('ai',  'Local reasoning engine: ' + (state.reasoning ? 'ON' : 'standby'));
+});
+
+function applyMode(mode) {
+  state.mode = mode;
+  const badge = document.getElementById('mode-badge');
+  const footer = document.getElementById('footer-mode');
+  badge.className = 'mode-badge';
+  if (mode === 'autonomous') {
+    badge.classList.add('mode-auto');
+    badge.textContent = 'Fully Autonomous';
+    footer.textContent = 'Fully Autonomous';
+    document.getElementById('buf-cap').textContent = '50,000 events';
+    state.buffer.capacity = 50000;
+  } else if (mode === 'semi-autonomous') {
+    badge.classList.add('mode-semi');
+    badge.textContent = 'Semi-Autonomous';
+    footer.textContent = 'Semi-Autonomous';
+  } else {
+    badge.classList.add('mode-coupled');
+    badge.textContent = 'Coupled';
+    footer.textContent = 'Coupled';
+  }
+}
+
+// ─── Toggles ──────────────────────────────────────────────────
+function handleToggle(el, key) {
+  state[key] = el.checked;
+  if (key === 'reasoning') {
+    addLog('ai', 'Local reasoning ' + (el.checked ? 'ENABLED' : 'DISABLED'));
+    if (el.checked) addLog('ai', 'Loading model: ' + state.model + ' …');
+  } else if (key === 'remediation') {
+    addLog('warn', 'Autonomous remediation ' + (el.checked ? 'ENABLED — changes will apply without approval' : 'disabled'));
+  } else if (key === 'prefilter') {
+    addLog('info', 'Anomaly pre-filter ' + (el.checked ? 'on' : 'off'));
+  }
+  saveToLocalStorage();
+  toast(key.charAt(0).toUpperCase() + key.slice(1) + ' ' + (el.checked ? 'enabled' : 'disabled'));
+}
+
+function handleScope(el, key) {
+  state.scope[key] = el.checked;
+  addLog('warn', 'Scope: ' + key + ' → ' + (el.checked ? 'ALLOWED' : 'restricted'));
+  saveToLocalStorage();
+}
+
+// ─── Model ────────────────────────────────────────────────────
+function selectModel(card, model) {
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  state.model = model;
+}
+
+function applyModelChange() {
+  addLog('ai', 'Switching reasoning model to: ' + state.model);
+  setTimeout(() => addLog('ai', 'Model loaded and ready ✓'), 1200);
+  saveToLocalStorage();
+  toast('Model set to ' + state.model);
+}
+
+// ─── Buffer / Sync ────────────────────────────────────────────
+function forceSync() {
+  addLog('info', 'Forced sync initiated …');
+  document.getElementById('conn-pill').className = 'status-pill pill-syncing';
+  document.getElementById('conn-label').textContent = 'Syncing';
+  setTimeout(() => {
+    const flushed = state.buffer.used;
+    state.buffer.used = 0;
+    updateBufferUI();
+    document.getElementById('last-sync').textContent = 'Just now';
+    document.getElementById('conn-pill').className = 'status-pill pill-online';
+    document.getElementById('conn-label').textContent = 'Running';
+    addLog('ok', 'Sync complete — ' + flushed + ' events uploaded');
+  }, 1800);
+}
+
+function flushBuffer() {
+  if (!confirm('Flush the local buffer? This permanently discards all buffered events.')) return;
+  state.buffer.used = 0;
+  updateBufferUI();
+  addLog('warn', 'Buffer flushed — ' + state.buffer.capacity + ' slots available');
+  toast('Buffer flushed');
+}
+
+function setStrategy(s) {
+  state.strategy = s;
+  ['opp','sched','manual'].forEach(k => {
+    const el = document.getElementById('strat-' + k);
+    el.className = 'btn btn-sm';
+    el.style.background = 'var(--surface2)';
+    el.style.borderColor = 'var(--border)';
+    el.style.color = 'var(--muted)';
+  });
+  const map = {opportunistic:'opp',scheduled:'sched',manual:'manual'};
+  const target = document.getElementById('strat-' + map[s]);
+  target.className = 'btn btn-primary btn-sm';
+  target.style = '';
+  addLog('info', 'Sync strategy set to: ' + s);
+  saveToLocalStorage();
+  toast('Strategy: ' + s);
+}
+
+function updateBufferUI() {
+  const pct = Math.round((state.buffer.used / state.buffer.capacity) * 100);
+  document.getElementById('buf-bar').style.width = pct + '%';
+  document.getElementById('buf-pct-label').textContent = pct + '%';
+  document.getElementById('buf-now').textContent = state.buffer.used.toLocaleString();
+  document.getElementById('kpi-buffer').textContent = state.buffer.used.toLocaleString();
+}
+
+// ─── Settings ─────────────────────────────────────────────────
+function setHeartbeat(val) {
+  state.heartbeat = val;
+  [30,60,300].forEach(v => {
+    const el = document.getElementById('hb-' + v);
+    el.className = 'btn btn-sm';
+    el.style.background = 'var(--surface2)';
+    el.style.borderColor = 'var(--border)';
+    el.style.color = 'var(--muted)';
+  });
+  const target = document.getElementById('hb-' + val);
+  target.className = 'btn btn-primary btn-sm';
+  target.style = '';
+}
+
+function saveSettings() {
+  const server = document.getElementById('cfg-server').value.trim();
+  const token  = document.getElementById('cfg-token').value.trim();
+  if (!server) { toast('Enter server URL'); return; }
+  addLog('info', 'Settings saved — reconnecting to ' + server);
+  saveToLocalStorage();
+  toast('Settings saved ✓');
+}
+
+// ─── Control ──────────────────────────────────────────────────
+function restartProbe() {
+  addLog('warn', 'Probe restart initiated …');
+  toast('Restarting …');
+  setTimeout(() => addLog('ok', 'Probe restarted successfully'), 2000);
+}
+
+function stopProbe() {
+  if (!confirm('Stop the probe agent? Monitoring will pause until it is restarted.')) return;
+  addLog('warn', 'Probe stopping …');
+  document.getElementById('conn-pill').className = 'status-pill pill-offline';
+  document.getElementById('conn-label').textContent = 'Stopped';
+  toast('Probe stopped');
+}
+
+function factoryReset() {
+  if (!confirm('Factory reset? All local config and buffered events will be wiped.')) return;
+  localStorage.clear();
+  addLog('warn', 'Factory reset complete — re-enroll via HOLOCRON');
+  toast('Reset complete');
+}
+
+// ─── Log ──────────────────────────────────────────────────────
+function addLog(level, msg) {
+  const now = new Date();
+  const t = now.toTimeString().slice(0,8);
+  state.logs.unshift({ t, level, msg });
+  if (state.logs.length > 200) state.logs.pop();
+  renderLog();
+}
+
+function renderLog() {
+  const el = document.getElementById('log-output');
+  const levelMap = { info:'log-level-info', ok:'log-level-ok', warn:'log-level-warn', error:'log-level-error', ai:'log-level-ai' };
+  const prefix = { info:'INFO ', ok:' OK  ', warn:'WARN ', error:'ERR  ', ai:' AI  ' };
+  el.innerHTML = state.logs.slice(0,50).map(l =>
+    `<div class="log-line"><span class="log-time">${l.t}</span><span class="${levelMap[l.level]||'log-level-info'}">[${prefix[l.level]||'INFO '}]</span><span>${l.msg}</span></div>`
+  ).join('');
+}
+
+function clearLog() {
+  state.logs = [];
+  renderLog();
+}
+
+// ─── Simulation ───────────────────────────────────────────────
+let uptimeSec = 0;
+function startSimulation() {
+  state.buffer.used = Math.floor(Math.random() * 1200);
+  state.stats.events = Math.floor(Math.random() * 5000) + 800;
+  state.stats.inferences = state.reasoning ? Math.floor(state.stats.events * 0.3) : 0;
+  updateBufferUI();
+  updateKPIs();
+  updateSyncTimes();
+
+  setInterval(() => {
+    uptimeSec++;
+    state.stats.events += Math.floor(Math.random() * 3);
+    if (state.reasoning) state.stats.inferences += Math.floor(Math.random() * 2);
+    if (state.buffer.used < state.buffer.capacity && state.strategy !== 'manual') {
+      state.buffer.used = Math.min(state.buffer.capacity, state.buffer.used + Math.floor(Math.random() * 5));
+    }
+    updateKPIs();
+    updateBufferUI();
+    // Occasional log entries
+    if (Math.random() < 0.04) {
+      const entries = [
+        ['info','Heartbeat sent — latency 12ms'],['ok','SNMP poll: 48 OIDs collected'],
+        ['info','CPU: 14% · RAM: 3.2GB / 8GB · Disk: 42%'],['ai','Anomaly score 0.12 — within normal range'],
+        ['ok','SSH check: 3 services healthy'],['info','ICMP sweep: 24/24 hosts reachable'],
+        ['ai','Pattern analysis: no anomalies in 15min window'],['warn','Disk write latency spike: 220ms — monitoring'],
+      ];
+      const e = entries[Math.floor(Math.random() * entries.length)];
+      addLog(e[0], e[1]);
+    }
+  }, 1000);
+}
+
+function updateKPIs() {
+  const h = Math.floor(uptimeSec/3600), m = Math.floor((uptimeSec%3600)/60), s = uptimeSec%60;
+  const fmt = h > 0 ? `${h}h${m}m` : m > 0 ? `${m}m${s}s` : `${s}s`;
+  document.getElementById('kpi-uptime').textContent = fmt;
+  document.getElementById('kpi-events').textContent = state.stats.events.toLocaleString();
+  document.getElementById('kpi-inferences').textContent = state.reasoning ? state.stats.inferences.toLocaleString() : '—';
+}
+
+function updateSyncTimes() {
+  document.getElementById('last-sync').textContent = '2 min ago';
+  document.getElementById('next-sync').textContent = state.strategy === 'manual' ? 'On demand' : '28 min';
+}
+
+// ─── Persist ──────────────────────────────────────────────────
+function saveToLocalStorage() {
+  try { localStorage.setItem('holo-probe-ui', JSON.stringify({ reasoning: state.reasoning, remediation: state.remediation, prefilter: state.prefilter, model: state.model, strategy: state.strategy, heartbeat: state.heartbeat, scope: state.scope })); } catch(e){}
+}
+
+function loadFromLocalStorage() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('holo-probe-ui') || '{}');
+    if (saved.reasoning !== undefined) { state.reasoning = saved.reasoning; document.getElementById('toggle-reasoning').checked = saved.reasoning; }
+    if (saved.remediation !== undefined) { state.remediation = saved.remediation; document.getElementById('toggle-remediation').checked = saved.remediation; }
+    if (saved.prefilter !== undefined) { state.prefilter = saved.prefilter; document.getElementById('toggle-prefilter').checked = saved.prefilter; }
+    if (saved.model) { state.model = saved.model; document.querySelectorAll('.model-card').forEach((c,i) => { const models = ['phi3-mini','llama3-8b','mistral-7b','gemma2-2b']; c.classList.toggle('selected', models[i] === saved.model); }); }
+    if (saved.strategy) setStrategy(saved.strategy);
+    if (saved.heartbeat) setHeartbeat(saved.heartbeat);
+    if (saved.scope) { state.scope = saved.scope; Object.keys(saved.scope).forEach(k => { const el = document.getElementById('scope-'+k); if(el) el.checked = saved.scope[k]; }); }
+  } catch(e){}
+}
+
+// ─── Toast ────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
